@@ -1,0 +1,327 @@
+---
+title: "STAT2000: Applied Statistics and Research Methods"
+output: 
+  html_document: 
+    css: Labs.css
+params:
+  inc_solu:
+    label: Include solutions
+    value: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+if ( ! require('haven'))
+  install.packages('haven', repos='https://cloud.r-project.org')
+if ( ! require('car'))
+  install.packages('car', repos='https://cloud.r-project.org')
+if ( ! require('jmv'))
+  install.packages('jmv', repos='https://cloud.r-project.org')
+
+data <- haven::read_sav('Lab 06 - Advertising.sav')
+data <- as.data.frame(data)
+data$Celebrity <- as.factor(data$Celebrity)
+data$GenderSpokes <- as.factor(data$GenderSpokes)
+data$GenderViewer <- as.factor(data$GenderViewer)
+```
+
+```{block include=(!params$inc_solu)}
+<style>
+.section.level5 {
+  display: none ;
+}
+</style>
+```
+
+# Lab 6 - Week 7
+
+#### Recall Lecture 6:
+
+ - Revision: One-way fixed effects ANOVA, Unplanned comparisons, Contrasts, Two-way ANOVA, interactions
+ - Common study designs: extensions on Two-way ANOVA
+
+### Lab Objectives
+
+On completion of this lab you will be able to:
+
+ - Explain the concept of interaction.
+ - Fit a factorial ANOVA model with an interaction term using SPSS.
+ - Interpret the interaction effect
+
+### Overview
+
+In the Week 6 lecture we revised the quantitative methods discussed in weeks 1-5 in overview, and then explored additional and more complex study designs commonly applied in practice.
+
+## 6.1 Case Study
+
+Read the following research paper.
+
+A patient by any other name ... : clinician group difference in labelling bias. Ellen J. Langer and Robert P. Abelson, Journal of Consulting and Clinical Psychology, 1974, Vol. 42, No. 1, pp 4 – 9. https://sci-hub.tw/10.1037/h0036054
+
+#### 1. Explain what the response and explanatory variables are in this study. How have they been measured or determined?
+
+##### Solutions
+
+Ⓢ 
+
+There are two explanatory variables:
+
+**type of clinician** with values *analytic* or *behavioural*. The researchers deliberately recruited their experimental subjects from clinicians with affiliations to university departments known to be oriented towards one type or the other. But they also checked the classification using a questionnaire - see the Subjects and Clinician Groupings paragraphs under the METHOD section of the paper.
+
+**label** with values *patient* or *job applicant*. Half of the analytic clinicians and half of the behavioural clinicians were told that the person they observed in a videotaped interview was a “patient”. The other halves of each group viewed the same tape but were told that the person was a “job applicant”. See Procedure under METHOD for the exact scripts used to instruct each clinician subject.
+
+The response variable was a score between 1, representing very disturbed, and 10, representing very well-adjusted for the clinician's beliefs about the interviewee. However, this was not assessed directly by the clinician but was an average of ratings by 5 independent raters of the written responses by the clinicians to a set of open-ended questions about the interviewee. See Dependent Measure under METHOD for the details.
+
+#### 2. How has the data been analysed? Is this method appropriate?
+
+##### Solutions
+
+Ⓢ 
+
+The basic method is a 2 x 2 factorial ANOVA, i.e., a two-way ANOVA where each factor has 2 levels. (To complicate the analysis slightly, a subgrouping of the analytic group of clinicians was also analysed.)
+
+#### 3. Explain why the concept of interaction is so important in this study.
+
+##### Solutions
+
+Ⓢ 
+
+The main result of this study (see next point) is all about interaction. The effect of the label is virtually non-existent for one group of clinicians, but substantial for the other group.
+
+#### 4. Summarise the main results of the study.
+
+##### Solutions
+
+Ⓢ 
+
+Regardless of whether the interviewee was labelled as a “patient” or a “job applicant”, the behavioural therapists tended to describe the interviewee as fairly well-adjusted (e.g., 6.26 v 5.98). The average adjustment rating from the analytic therapists however was significantly lower (more disturbed) for those who were told that the interviewee was a “patient” compared to the average rating from those told that he was a “job applicant” (e.g., NYU 5.88 v 2.40).
+
+#### 5. This study is a specific example of how people's judgement can be influenced or biased by their expectations. Why is this general concept often important when developing the detailed methodology for a research study?
+
+##### Solutions
+
+Ⓢ 
+
+This study is a specific example of how people's judgement can be influenced or biased by their expectations. So if you are using people as the subjects of your experiment then you need to make sure that the responses you measure really are caused by the changes being made in the explanatory variables and not confounded by the subjects responding to information consciously or unconsciously provided by the researcher.
+
+## 6.2 Factorial (multi-way) ANOVA
+
+A researcher is interested in how well consumers recall television advertising that they have seen. Two factors that the researcher considers may have an effect are the existence of a celebrity in the advertisement as well as the gender of the primary spokesperson in the advertisement. Individuals for the study are randomly selected and then randomly allocated to groups. Each of the groups will watch a set piece of television programming for two hours with several advertisements that meet the respective groups criteria randomly scattered though ordinary advertisements.
+
+After the viewing the subjects are tested on their recall of details shown in the advertisements and provided a score of their recall. A higher score indicates better recall of advertising details. The researcher wishes to test at the 5% significance level.
+
+The results of the study are in [Lab 06 - Advertising.sav](Lab 06 - Advertising.sav).
+
+#### 1. The researcher has asked that you perform a statistical analysis to determine if the grade of celebrity and or gender of the spokesperson effects recall in television advertisements. As part of your analysis, be sure to:
+
+ - Include the null and alternative hypotheses for the elements of the model you are testing.
+ - Justify your final decision.
+ 
+This requires a two way ANOVA to be performed. If you cannot remember the steps to create the output for a two way ANOVA, review the exercises from last week.
+
+##### Solutions
+
+Ⓢ 
+
+```{r}
+model <- lm(Score ~ Celebrity * GenderSpokes, data)
+anova(model)
+```
+
+First we are required to test the whole model.
+
+$H_0: \alpha_i = \beta_j  = \alpha\beta_{ij} = 0$
+
+$H_a:$ at least one effect is non-zero
+
+Where $\alpha_i$ represents the effect due to the ith level of the `Celebrity` factor, $\beta_j$ represents the effect due to the jth level of the `GenderSpokes` factor, and $\alpha\beta_{ij}$ represents the interaction effect between the ith and jth level of the factor A and B. 
+
+Given the p-value of 0.118 is greater then our significance level, we are unable to identify a statistically significant whole model effect. 
+
+If we were testing at a higher significance level, we may have gone on to identify a statistically significant main effect due to celebrity level (p = 0.047).
+
+#### 2. After providing your analysis to the researcher, she informs you that you forgot a factor in the model. An additional factor for which data was collected was intended to be included in the analysis. The additional factor is the gender of the person viewing the advertisements. Run your analysis again including the additional factor.
+
+  i. Looking at the ANOVA table, are there any factors of the model that are now significant? Be sure to indicate your null and alternative hypothesis for these factors as well as check the assumptions for the analysis.
+  
+  ii. Explain the relationship with any of the interaction terms that are identified as being statistically significant. Use a marginal means plot (profile plots) to help with this.
+
+##### Solutions
+
+Ⓢ 
+
+Below is the ANOVA table for the three way ANOVA.
+
+```{r}
+model <- lm(Score ~ Celebrity * GenderSpokes * GenderViewer, data)
+anova(model)
+```
+
+First we are required to test the whole model.
+
+ $H_0: \alpha_i = \beta_j = \gamma_k = \alpha\beta_{ij} = \alpha\gamma_{ik} = \beta\gamma_{kj} = \alpha\beta\gamma_{ijk} = 0$
+ 
+ $H_a:$ at least one effect is non-zero
+
+Where factor A, B, and C are `Celebrity`, `GenderSpokes`, `GenderViewer`. $\alpha_i$ represents the effect due to the ith level of the celebrity factor, $\beta_j$ represents the effect due to the jth level of the GenderSpokes factor, $\gamma_k$ represents the effect due to the kth level of the GenderViewer factor. $\alpha\beta_{ij}$ represents the interaction effect between the ith and jth level of the factor A and B. $\alpha\gamma_{ik}$ represents the interaction effect between the ith and kth level of the factor A and C. $\beta\gamma_{jk}$ represents the interaction effect between the jth and kth level of the factor B and C. $\alpha\beta\gamma_{ijk}$ represents the three way interaction effect between the factor A, B, and C. 
+
+Since the p-value (0.030) is less than 0.05, there is a statistically significant model effect. 
+
+Of the interaction terms: 
+
+ $H_0: \beta\gamma_{jk} = 0$
+ 
+ $H_a: \beta\gamma_{jk} \ne 0$
+
+Since the p-value (0.013) is less than 0.05, there is a statistically significant interaction between the gender of the viewer and the gender of the spokesperson. 
+
+For the main effects: 
+
+ $H_0: \alpha_i = 0$
+
+ $H_a: \alpha_i \ne 0$
+
+Since the p-value (0.013) is less than 0.05, there is a statistically significant effect due to the level of celebrity of the spokesperson. 
+
+###### Assumptions
+
+Randomness: Told that the subjects are randomly selected and randomly allocated to groups.
+
+Independence: Due to random sampling, can assume this.
+
+Equal variance
+
+```{r}
+leveneTest(model, center='mean')
+```
+
+The p-value (p = 0.058) is greater than 0.05 indicating that there is not enough evidence to violate this assumption. Although it is borderline, a transformation or non-parametric test may be appropriate.
+
+Normality:
+
+```{r}
+res <- residuals(model)
+shapiro.test(res)
+```
+
+The residuals have been combined and tested all together. The test of normality does not provide evidence to reject this assumption (p=0.240).
+
+Outliers: 
+
+The side by side box plot does not indicate any outliers.
+
+```{r}
+plot(Score ~ Celebrity, data)
+```
+
+ii. Below is the marginal means plot for gender of the spokesperson and gender of the viewer.
+
+```{r}
+jmv::ANOVA(
+  formula = Score ~ GenderSpokes * GenderViewer,
+  data = data,
+  emMeans = ~GenderSpokes:GenderViewer,
+  emmPlotError = 'none'
+)$emm
+```
+
+It appears that if you are a male viewer, you score higher on recalling details of the advertisement when the spokesperson is female. Where as if you are a female viewer you are more likely to score higher recalling when the spokesperson is male. This is shown by the lines crossing each other in the above plot. 
+
+#### 3. You are now told that when individuals were allocated to groups, they were informed of the style of advertisements they were going to be eventually tested on. Does this information change the validity of any conclusions you are able to make from the experiment?
+
+As people were informed of what to look out for, this may make the results of the experiment not generalisable to the general public. For example, knowing that you’re supposed to be looking at adds with celebrities, you may recognise adds with celebrities and pay closer attention. This could be the reason that this main effect was significant.
+
+## 6.3 Latin Squares
+
+This study considers the effects of a drug to stimulate growth in girls who are of short stature as a consequence of a particular syndrome. Blocking by subject and time period occurred whereby repeated measures for different treatments were applied to the same subject. A 5×5 Latin square design (below) was utilised for five subjects, five time periods, and five treatments. Each of the five time periods were two months duration, separated by an intervening month (no treatment was given). The five treatments were: `A`: no treatment (placebo); `B`: low dose of drug; `C`: moderate dose; `D`: high dose; `E`:very high dose. The dependent variable was the growth achieved (in millimetres) over the two-month period in which each treatment was administered. The results of the study are below and in [Lab 06 - Growth.sav](Lab 06 - Growth.sav).
+
+This requires a three way ANOVA with the interaction terms removed.
+
+ | Week |   Mon  |   Tue  |   Wed  |  Thu   |   Fri  | Mean |
+ |------|--------|--------|--------|--------|--------|------|
+ |   1  | 18 (D) | 17 (C) | 14 (A) | 21 (B) | 17 (E) | 17.4 |
+ |   2  | 13 (C) | 34 (B) | 21 (E) | 16 (A) | 15 (D) | 17.8 |
+ |   3  | 7  (A) | 29 (D) | 32 (B) | 27 (E) | 13 (C) | 21.6 |
+ |   4  | 17 (E) | 13 (A) | 24 (C) | 31 (D) | 25 (B) | 22.0 |
+ |   5  | 21 (B) | 26 (E) | 26 (D) | 31 (C) | 7 (A)  | 22.2 |
+ | Mean |  15.2  |  21.8  |  23.4  |  25.2  |  15.4  | 20.6 |
+	
+Ⓡ Usually we specify a *full factorial* model, which is where all the main effects *and* the interaction terms are analysed. For example, if we specify the model `GROWTH ~ PERIOD * SUBJECT * TREATMEN`, this means to construct a model with all the main effects, and all the interactions that can be made from the combinations of `PERIOD`, `SUBJECT` and `TREATMEN`. Indeed, `GROWTH ~ PERIOD * SUBJECT * TREATMEN` is equivalent to:
+
+```
+GROWTH ~ PERIOD + SUBJECT + TREATMEN + PERIOD:SUBJECT + PERIOD:TREATMEN + SUBJECT:TREATMEN + PERIOD:SUBJECT:TREATMEN
+```
+
+In this instance, we *only* want the main effects, and don't want any of the interaction terms. So for this example, you'll want the formula:
+
+```
+GROWTH ~ PERIOD + SUBJECT + TREATMEN
+```
+
+Ⓥ Analyses → ANOVA → ANOVA. Begin by adding the 3 vairable `PERIOD`, `SUBJECT` and `TREATMENT` as factors. By default, jamovi (and most statistical software), when you specify multiple factors for an ANOVA, create a full-factorial model; that is, a model that contains all main effects, and all combinations of interactions too. So in this case, we end up with a model containing the terms:
+
+ - `PERIOD`
+ - `SUBJECT`
+ - `TREATMENT`
+ - `PERIOD ✻ SUBJECT`
+ - `PERIOD ✻ TREATMENT`
+ - `SUBJECT ✻ TREATMENT`
+ - `PERIOD ✻ SUBJECT ✻ TREATMENT`
+
+In this example, we **only** want the main effects. To remove the interactions from the model, go to the *Model* section, and remove the four interaction terms. This will give you a simpler ANOVA with only the main effects.
+
+##### Solutions
+
+Ⓢ 
+
+```{r}
+data <- haven::read_sav('Lab 06 - Growth.sav')
+data <- as.data.frame(data)
+
+data$PERIOD <- as.factor(data$PERIOD)
+data$SUBJECT <- as.factor(data$SUBJECT)
+data$TREATMEN <- as.factor(data$TREATMEN)
+
+model <- lm(GROWTH ~ PERIOD + SUBJECT + TREATMEN, data)
+anova(model)
+```
+
+#### 1. Test whether the growth of the girls differs for the five treatments.
+
+##### Solutions
+
+Ⓢ 
+
+```{r}
+aovObject <- aov(model)
+TukeyHSD(aovObject)$TREATMEN
+```
+
+$H_0: \alpha_i = 0$ for all i
+
+$H_a: \alpha_i \ne 0$ for any i
+
+where $\alpha_i$ is the effect on population mean growth of girls due to treatment i where the treatments were: A: no treatment ; B: low dose;  C: moderate  dose;  D: high dose; E: very high dose.
+
+ - The test  statistic is F = 10.6 (given by the ratio  of $MS_A$  to $MS_{error}$) 
+ - p-value is 0.001 (given by P (F4,12 > 10.6)).
+ - different drug  treatments have  a  statistically significant effect on population mean growth rate (p = 0.001).  - However, Tukey’s HSD test at a 5% significance level, it is actually only the placebo treatment that is different (lower) with the effect of the other four agents unable to be distinguished from each other.
+
+#### 2. Test whether blocking by subject was necessary. Also test whether blocking by time period was necessary.
+
+##### Solutions
+
+Assess: variance attributable to the effect of subject i.e. the different girls.
+
+ - The test statistic is F = 7.6 (given by the ratio of $MS_B$ to $MS_{error}$)
+ - p-value is 0.003 (given by P ($F_{4,12}$ > 7.6)).
+ - There is a statistically significant added component of variance in growth related to the differences between  the girls in the study (p = 0.003).
+
+Assess: added component of variance attributable to the effect of the different time periods in the study.
+
+ - The test statistic is F = 1.3 (given by the ratio of $MS_C$ to $MS_{error}$)
+ - p-value is 0.32 (given by P ($F_{4,12}$ > 1.3)).
+ - The added component of variance in girl's growth attributable to the different periods of measurement is not significantly different from zero (p = 0.32).
+
+Clearly blocking by subject is a critical part of this experiment.  It could be argued that blocking by period does not seem important and that further studies of this nature could forego this. However would still need to give each girl all the different drug treatments (blocking by subject) and in different periods anyway, so it may be just as easy to collect data using design that incorporates blocking by period.
