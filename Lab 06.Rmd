@@ -13,11 +13,11 @@ params:
 knitr::opts_chunk$set(echo = TRUE)
 
 if ( ! require('haven'))
-  install.packages('haven', repos='https://cloud.r-project.org')
+  install.packages('haven')
 if ( ! require('car'))
-  install.packages('car', repos='https://cloud.r-project.org')
+  install.packages('car')
 if ( ! require('jmv'))
-  install.packages('jmv', repos='https://cloud.r-project.org')
+  install.packages('jmv')
 
 data <- haven::read_sav('Lab 06 - Advertising.sav')
 data <- as.data.frame(data)

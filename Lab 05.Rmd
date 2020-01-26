@@ -13,9 +13,9 @@ params:
 knitr::opts_chunk$set(echo = TRUE)
 
 if ( ! require('haven'))
-  install.packages('haven', repos='https://cloud.r-project.org')
+  install.packages('haven')
 if ( ! require('car'))
-  install.packages('car', repos='https://cloud.r-project.org')
+  install.packages('car')
 
 data <- haven::read_sav('Lab 05 - Activity.sav')
 data <- as.data.frame(data)

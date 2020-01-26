@@ -1,6 +1,13 @@
 
+local({
+  # set a stable mirror
+  r <- getOption("repos")
+  r["CRAN"] <- "https://cran.microsoft.com/snapshot/2020-01-01"
+  options(repos = r)
+})
+
 if ( ! require(rmarkdown))
-  install.packages('rmarkdown', repos='https://cloud.r-project.org')
+  install.packages('rmarkdown')
 
 Rmds <- list.files(pattern='.*\\.Rmd')
 
