@@ -55,20 +55,27 @@ data <- as.data.frame(data)
 
 This session reviews some concepts you should be familiar with from the STAT1070 course. If you have difficulties understanding these concepts you should review your STAT1070 notes. Please consider attending any of the help sessions, available from Week 2, if you would like some additional assistance at any time.
 
+#### Data Files
+
+  - [Lab 01 - swimmers.sav](Lab 01 - swimmers.sav)
 
 ## 1.1 Revision
 
 ### 1.1.1 Data Analysis
 
-Seventy-one swimmers finished the first day's qualifying heats in the men's 100m freestyle event at the 2000 Olympics in Sydney. The SPSS file *swimmers.sav* contains the times in seconds.
+Seventy-one swimmers finished the first day's qualifying heats in the men's 100m freestyle event at the 2000 Olympics in Sydney. The data file [Lab 01 - swimmers.sav](Lab 01 - swimmers.sav) contains the times in seconds.
 
 #### 1. Describe the distribution of these times: use a histogram to visualise the data.
 
 The variable of interest here is *TimeInSecs*.
 
-Ⓡ use the `hist()` function. The first argument needs to be a vector of the data we want to visualise, in this case it will be `data$TimeInSecs`. The bin size of the histogram can be adjusted with the breaks argument, i.e. `hist(..., breaks=10)`.
+![](R.svg)
+
+Use the `hist()` function. The first argument needs to be a vector of the data we want to visualise, in this case it will be `data$TimeInSecs`. The bin size of the histogram can be adjusted with the breaks argument, i.e. `hist(..., breaks=10)`.
   
-Ⓥ  Analyses → Explore → Descriptives. Under the *Plots* section you'll find the option for a histogram.
+![](v.svg)
+
+Analyses → Explore → Descriptives. Under the *Plots* section you'll find the option for a histogram.
 
 ##### Solutions
 
@@ -256,7 +263,9 @@ Hint: Don't enter the data as you see it in the data set above! It needs to be i
   |   B   |   798  |
   |  ...  |   ...  |
 
-Ⓡ R isn't that great for entering numbers in. You can either create the data set with jamovi (see below) and export it as a *.csv* file to be read into R:
+![](R.svg)
+
+R isn't that great for entering numbers in. You can either create the data set with jamovi (see below) and export it as a *.csv* file to be read into R:
 
 ```
 data <- read.csv('path/to/file.csv')
@@ -276,7 +285,9 @@ once the data is imported, you can perform a t-test with the `t.test()` function
 t.test(Energy ~ Brand, data)
 ```
 
-Ⓥ  Simply enter the values into the jamovi spreadsheet, with a separate column for *Brand* and for *Energy*. Double clicking on the column header will let you change the name of each column.
+![](v.svg)
+
+Simply enter the values into the jamovi spreadsheet, with a separate column for *Brand* and for *Energy*. Double clicking on the column header will let you change the name of each column.
 
 ##### Solutions
 
@@ -358,13 +369,17 @@ SA = 172.20 and SB = 170.97. The average standard deviation is therefore
 
 $$ { { 172.20 + 170.97 } \over 2 } = 171.59 $$
 
-Ⓡ Use the `power.t.test()` function to calculate the power as follows:
+![](R.svg)
+
+Use the `power.t.test()` function to calculate the power as follows:
 
 ```{r, eval=FALSE}
 power.t.test(n=14, delta=40, sd=171.59, sig.level=0.05)
 ```
 
-Ⓥ Make sure you have the *jpower* module installed, and then Analyses → jpower → Independent Samples T-Test.
+![](v.svg)
+
+Make sure you have the *jpower* module installed, and then Analyses → jpower → Independent Samples T-Test.
 
 Now things are a little different in *jpower*; rather than separately specifying the expected difference between means and the standard deviation, *jpower* requires that we combine these into a single value called *effect size*. Effect size is calculated:
 
@@ -394,13 +409,17 @@ A larger sample size is required, as larger sample size has less uncertainty in 
 
 #### Work out the sample size required to achieve a power of 80%.
 
-Ⓡ Use the `power.t.test()` function, however this time, specify the desired power and leave `n` unspecified.
+![](R.svg)
+
+Use the `power.t.test()` function, however this time, specify the desired power and leave `n` unspecified.
 
 ```{r, eval=FALSE}
 power.t.test(delta=40, sd=171.59, sig.level=0.05, power=0.8)
 ```
 
-Ⓥ Analyses → jpower → Independent Samples T-Test. This time we want to calculate *N*, or *N per group*, so choose that for the first option (called *Calculate*). Next enter the *Minimally interesting effect-size*, and *Minimum desired power*.
+![](v.svg)
+
+Analyses → jpower → Independent Samples T-Test. This time we want to calculate *N*, or *N per group*, so choose that for the first option (called *Calculate*). Next enter the *Minimally interesting effect-size*, and *Minimum desired power*.
 
 What sample-size is required?
 
@@ -416,7 +435,7 @@ power.t.test(delta=40, sd=171.59, sig.level=0.05, power=0.8)
 
  - A researcher has developed a language training system for infants. To test the system, 12 parents are randomly selected who are willing to use the language training system with their new born infants for two years. Samples of 12 different toddlers who do not use the language training system are also tested forming a control group; the data from the test are collected and analysed.
 
- - At the end of the two-year test period, the number of words in each toddler’s vocabulary is measured.  The data are in the SPSS file **Lab 01 - lts.sav**.
+ - At the end of the two-year test period, the number of words in each toddler’s vocabulary is measured. The data are in the data file [Lab 01 - swimmers.sav](Lab 01 - swimmers.sav).
 
 Based on the data, consider some basic exploratory analysis displays and then use the independent samples t-test in R or jamovi to assess whether the language training system is beneficial.
 
