@@ -247,7 +247,7 @@ This requires a three way ANOVA with the interaction terms removed.
  |   5  | 21 (B) | 26 (E) | 26 (D) | 31 (C) | 7 (A)  | 22.2 |
  | Mean |  15.2  |  21.8  |  23.4  |  25.2  |  15.4  | 20.6 |
 	
-Ⓡ Usually we specify a *full factorial* model, which is where all the main effects *and* the interaction terms are analysed. For example, if we specify the model `GROWTH ~ PERIOD * SUBJECT * TREATMEN`, this means to construct a model with all the main effects, and all the interactions that can be made from the combinations of `PERIOD`, `SUBJECT` and `TREATMEN`. Indeed, `GROWTH ~ PERIOD * SUBJECT * TREATMEN` is equivalent to:
+![](R.svg) Usually we specify a *full factorial* model, which is where all the main effects *and* the interaction terms are analysed. For example, if we specify the model `GROWTH ~ PERIOD * SUBJECT * TREATMEN`, this means to construct a model with all the main effects, and all the interactions that can be made from the combinations of `PERIOD`, `SUBJECT` and `TREATMEN`. Indeed, `GROWTH ~ PERIOD * SUBJECT * TREATMEN` is equivalent to:
 
 ```
 GROWTH ~ PERIOD + SUBJECT + TREATMEN + PERIOD:SUBJECT + PERIOD:TREATMEN + SUBJECT:TREATMEN + PERIOD:SUBJECT:TREATMEN
@@ -259,7 +259,7 @@ In this instance, we *only* want the main effects, and don't want any of the int
 GROWTH ~ PERIOD + SUBJECT + TREATMEN
 ```
 
-Ⓥ Analyses → ANOVA → ANOVA. Begin by adding the 3 vairable `PERIOD`, `SUBJECT` and `TREATMENT` as factors. By default, jamovi (and most statistical software), when you specify multiple factors for an ANOVA, create a full-factorial model; that is, a model that contains all main effects, and all combinations of interactions too. So in this case, we end up with a model containing the terms:
+![](v.svg) Analyses → ANOVA → ANOVA. Begin by adding the 3 vairable `PERIOD`, `SUBJECT` and `TREATMENT` as factors. By default, jamovi (and most statistical software), when you specify multiple factors for an ANOVA, create a full-factorial model; that is, a model that contains all main effects, and all combinations of interactions too. So in this case, we end up with a model containing the terms:
 
  - `PERIOD`
  - `SUBJECT`
