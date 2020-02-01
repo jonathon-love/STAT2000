@@ -52,15 +52,24 @@ On completion of this lab you will be able to:
 
 In the Week 5 lecture we discussed unplanned (review) and planned comparisons – within the latter we introduced orthogonal contrasts (a series of null hypotheses we wish to test, which are determined before the data have been analysed). We also began the extension analysis, two-way fixed effects ANOVA.
 
+#### Data Files
+
+ - [Lab 05 - Activity.sav](Lab 05 - Activity.sav)
+ - [Lab 05 - Recall.sav](Lab 05 - Recall.sav)
+
 ## 5.1 Transformation of the Response Variable
 
 The file [Lab 05 - Activity.sav](Lab 05 - Activity.sav) contains data from a study by Conti and Musty (1984) on the activity levels in rats following administration of different levels of THC, the active ingredient in marijuana. The activity units, based on an arbitrary scale, are reported for each rat over the 10 minute post-injection period.
 
 #### 1. Analyse the data. Ensure you test for equality of variance across treatment groups and whether the residuals are normally distributed. Report conclusions but do not consider multiple comparisons at this stage.
 
-Ⓡ construct a model using the `lm()` function, and then pass this model to the `anova()` function.
+![](R.svg)
+
+Construct a model using the `lm()` function, and then pass this model to the `anova()` function.
   
-Ⓥ  Analyses → ANOVA → ANOVA. It should be clear which is the dependent variable and which is the explanatory factor. Under the *Assumption Checks* section you'll find options for testing equality of variances and normality.
+![](v.svg)
+
+Analyses → ANOVA → ANOVA. It should be clear which is the dependent variable and which is the explanatory factor. Under the *Assumption Checks* section you'll find options for testing equality of variances and normality.
 
 ##### Solutions
 
@@ -108,7 +117,9 @@ p = 0.023 from formal test, hence reject null at 5% significance level and hence
 
 #### 2. Graph the residuals against the predicted values. What does your residual by predicted plot show? Explain why this is relevant to your original ANOVA analysis.
 
-Ⓡ You can use the following code
+![](R.svg)
+
+You can use the following code
 
 ```{r eval=FALSE}
 model <- lm(Y ~ TrmntGrp, data)
@@ -117,7 +128,9 @@ preds  <- predict(model)
 plot(preds, resids)
 ```
   
-Ⓥ There's no easy way to perform this in jamovi, but you can paste the preceding R code in the Rj Editor.
+![](v.svg)
+
+There's no easy way to perform this in jamovi, but you can paste the preceding R code in the Rj Editor.
 
 ##### Solutions
 
@@ -150,13 +163,17 @@ $$ 376 - 390.56 = -14.56 $$
 
 Transformation of the response variable can be a useful remedial measure when assumptions of equal variance and/or normally distributed residuals are not met. The logarithmic transformation, either to the base 10 or base e (natural logarithms), is commonly used when residuals are right skewed or the standard deviation is proportional to the mean.
 
-Ⓡ Create a new variable called `LogY` which is the log transformed version of `Y`, and create a new linear model using this variable (`LogY ~ TrmntGrp`). Then run the same set of analyses you ran for question 1.
+![](R.svg)
+
+Create a new variable called `LogY` which is the log transformed version of `Y`, and create a new linear model using this variable (`LogY ~ TrmntGrp`). Then run the same set of analyses you ran for question 1.
 
 ```{r eval=FALSE}
 data$LogY <- log(data$Y)
 ```
 
-Ⓥ Create a new computed variable called `LogY` which is the log transformed version of `Y`. Data → Add → Append Computed Variable. This creates a 'Computed variable' which we can specify a formula for. Specify a new name for the variable (for example `Log Y`), and then specify the formula `LOG(Y)` and press enter. The variable should now be filled with the log of the value from column *Y*.
+![](v.svg)
+
+Create a new computed variable called `LogY` which is the log transformed version of `Y`. Data → Add → Append Computed Variable. This creates a 'Computed variable' which we can specify a formula for. Specify a new name for the variable (for example `Log Y`), and then specify the formula `LOG(Y)` and press enter. The variable should now be filled with the log of the value from column *Y*.
 
 (Note: It turns out computed variables can do a lot more than just a log transform; if you click the small fx button you can get a full list of all the functions available).
 
@@ -243,14 +260,18 @@ The researcher must not have had in mind planned comparisons before collecting t
  2. Use the transformed data to perform a multiple comparison
  3. Comment on the findings.
 
-Ⓡ Multiple comparisons (with a Tukey correction) can be performed in R using the `TukeyHSD` function. Note that it's necessary to convert the `lm()` object to an `aov()` object before passing it to `TukeyHSD()`.
+![](R.svg)
+
+Multiple comparisons (with a Tukey correction) can be performed in R using the `TukeyHSD` function. Note that it's necessary to convert the `lm()` object to an `aov()` object before passing it to `TukeyHSD()`.
 
 ```{r eval=FALSE}
 aovObject <- aov(model)
 TukeyHSD(aovObject)
 ```
 
-Ⓥ You'll find the option to perform post-hoc tests for the different levels of `TrmntGrp` variable under the *Post Hoc Tests* section of the ANOVA.
+![](v.svg)
+
+You'll find the option to perform post-hoc tests for the different levels of `TrmntGrp` variable under the *Post Hoc Tests* section of the ANOVA.
 
 ##### Solutions
 
@@ -313,7 +334,9 @@ where in this example
 
 #### 2. Fit the appropriate ANOVA model. Record the means and obtain plots of the factor level (group) sample means for each factor to enable a visual consideration of the effects of the factors.
 
-Ⓡ It's possible to use a number of different functions to achieve this, but for the sake of expedience, let's use the *jmv* package's `ANOVA()` function.
+![](R.svg)
+
+It's possible to use a number of different functions to achieve this, but for the sake of expedience, let's use the *jmv* package's `ANOVA()` function.
 
 ```{r, eval=FALSE}
 library(jmv)
@@ -327,7 +350,9 @@ ANOVA(
   emmTables = TRUE)
 ```
 
-Ⓥ  Analyses -> ANOVA -> ANOVA. This is a two-way ANOVA, so we'll be specifying two factors this time. We want to produce 3 plots, one plot showing the main-effect of `LearningMood`, one plot showing the main-effect of `RecallMood`, and one plot showing the interaction between `LearningMood` and `RecallMood`. To create these plots, come down to the *Estimated Marginal Means* section. In this section, we can specify the *terms* that we want to plot. To begin with, add `LearningMood` into *Term 1*. This should produce a main-effect plot of `LearningMood`. To create a second plot, click "+ New Term". This will provide you with a slot to add `RecallMood` into; providing a plot of its main-effect. Finally, click "+ New Term" again, and this time add *both* `LearningMood` and `RecallMood` into that term box. This will produce an *interaction plot* of `LearningMood` and `RecallMood`.
+![](v.svg)
+
+Analyses -> ANOVA -> ANOVA. This is a two-way ANOVA, so we'll be specifying two factors this time. We want to produce 3 plots, one plot showing the main-effect of `LearningMood`, one plot showing the main-effect of `RecallMood`, and one plot showing the interaction between `LearningMood` and `RecallMood`. To create these plots, come down to the *Estimated Marginal Means* section. In this section, we can specify the *terms* that we want to plot. To begin with, add `LearningMood` into *Term 1*. This should produce a main-effect plot of `LearningMood`. To create a second plot, click "+ New Term". This will provide you with a slot to add `RecallMood` into; providing a plot of its main-effect. Finally, click "+ New Term" again, and this time add *both* `LearningMood` and `RecallMood` into that term box. This will produce an *interaction plot* of `LearningMood` and `RecallMood`.
 
 ##### Solutions
 
