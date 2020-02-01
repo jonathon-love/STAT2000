@@ -80,9 +80,13 @@ The data for each patient is in the table below and [Lab 07 - Parkinsons.sav](La
 
 #### 1. Use the Wilcoxon Signed Rank Test to determine whether there has been a statistically significant improvement in symptoms. State the hypotheses, test statistic, p-value and conclusion.
 
-Ⓡ use the function `wilcox.test()`, make sure you specify the `paired=TRUE` option.
+![](R.svg)
 
-Ⓥ Analyses -> T-Tests -> Paired Samples T-Test. As you'll see, the *Wilcoxon signed rank test* is performed the same way you would a paired samples t-test. You just need to check the box for the Wilcoxon signed rank. Make sure you're clear on which results belongs to the parametric Student's t-test, and the non-parametric Wilcoxon signed rank.
+Use the function `wilcox.test()`, make sure you specify the `paired=TRUE` option.
+
+![](v.svg)
+
+Analyses -> T-Tests -> Paired Samples T-Test. As you'll see, the *Wilcoxon signed rank test* is performed the same way you would a paired samples t-test. You just need to check the box for the Wilcoxon signed rank. Make sure you're clear on which results belongs to the parametric Student's t-test, and the non-parametric Wilcoxon signed rank.
 
 ##### Solutions
 
@@ -102,9 +106,13 @@ Thus our observed data provide very strong evidence against the null hypothesis 
 
 #### 2. Use the equivalent parametric test (matched/paired samples t-test) to perform the test.
 
-Ⓡ use the function `t.test()`, make sure you specify the `paired=TRUE` option.
+![](R.svg)
 
-Ⓥ The test statistic and p-value for the Student's t-test should already be visible in the analysis from the previous question.
+Use the function `t.test()`, make sure you specify the `paired=TRUE` option.
+
+![](v.svg)
+
+The test statistic and p-value for the Student's t-test should already be visible in the analysis from the previous question.
 
 ##### Solutions
 
@@ -144,9 +152,13 @@ Consider a Pearson Chi-squared test and Mann-Whitney U-test; why would one be mo
 
 Data available in [Lab 07 - Pregnancy.sav](Lab 07 - Pregnancy.sav).
 
-Ⓡ use the function `wilcox.test()`, sometimes Mann-Whitney U is called Wilcoxon signed rank. This data is *not* paired, so don't specify the `paired=TRUE` argument.
+![](R.svg)
 
-Ⓥ Analyses -> T-Tests -> Independent Samples T-Test. You'll find an option for Mann-Whitney U-Test. Make sure you're clear on which results belongs to the parametric Student's t-test, and the non-parametric Mann-Whitney U.
+Use the function `wilcox.test()`, sometimes Mann-Whitney U is called Wilcoxon signed rank. This data is *not* paired, so don't specify the `paired=TRUE` argument.
+
+![](v.svg)
+
+Analyses -> T-Tests -> Independent Samples T-Test. You'll find an option for Mann-Whitney U-Test. Make sure you're clear on which results belongs to the parametric Student's t-test, and the non-parametric Mann-Whitney U.
 
 ##### Solutions
 
@@ -250,9 +262,13 @@ Tukey’s HSD test at a 5% significance level indicated that the population mean
 
 #### 2. Carry out the Kruskal-Wallis test. State the hypotheses, test statistic, p-value and conclusion.
 
-Ⓡ use the function `kruskal.test()` for the Kruskal-Wallis. Use `pSDCFlig()` from the `NSM3` package for pairwise comparisons. Use `method="Asymptotic"`.
+![](R.svg)
 
-Ⓥ Analyses -> ANOVA -> Non-parametric -> One Way ANOVA (Kruskal-Wallis)
+Use the function `kruskal.test()` for the Kruskal-Wallis. Use `pSDCFlig()` from the `NSM3` package for pairwise comparisons. Use `method="Asymptotic"`.
+
+![](v.svg)
+
+Analyses -> ANOVA -> Non-parametric -> One Way ANOVA (Kruskal-Wallis)
 
 ##### Solutions
 
