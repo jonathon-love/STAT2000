@@ -16,8 +16,8 @@ if ( ! require('haven'))
   install.packages('haven')
 if ( ! require('car'))
   install.packages('car')
-if ( ! require('DunnettTests'))
-  install.packages('DunnettTests')
+if ( ! require('multcomp'))
+  install.packages('multcomp')
 
 data <- haven::read_sav('Lab 04 - Vocab.sav')
 data <- as.data.frame(data)
@@ -46,16 +46,20 @@ On completion of this lab you will be able to:
 
  - Identify and test assumptions for an ANOVA.
  - Identify when multiple comparisons are appropriate.
- - Perform the appropriate multiple comparisons using SPSS and interpret the findings.
+ - Perform the appropriate multiple comparisons and interpret the findings.
  - Recognise the role of Randomisation and Blocking and be able to implement in practice.
 
 ### Overview
 
 In the Week 4 lecture we discussed the assumptions underlying oneway fixed effects ANOVA, and how we may check or test these (diagnose) and what action we may take to remedy the situation when assumptions don't hold (remedial measures). We also considered the additional testing, for differences between groups, once the ANOVA identifies that at least one population mean differs (post-hoc tests or multiple comparisons).
 
+#### Data Files
+
+ - [Lab 04 - Vocab.sav](Lab 04 - Vocab.sav)
+
 ## 4.1 Assumptions and Multiple Comparisons
 
-A researcher wanted to test a new approach to increase vocabulary among children with autism. For the experiment, 36 children were randomly assigned to one of three different treatments (Community referrals with No additional Intervention, Low-Intensity Intervention, and High-Intensity Intervention). After a fixed period of time, the increase in the children's vocabulary was measured (the number of additional words spoken over a specified time interval). The results are presented in the following table and in the file Vocab.sav.
+A researcher wanted to test a new approach to increase vocabulary among children with autism. For the experiment, 36 children were randomly assigned to one of three different treatments (Community referrals with No additional Intervention, Low-Intensity Intervention, and High-Intensity Intervention). After a fixed period of time, the increase in the children's vocabulary was measured (the number of additional words spoken over a specified time interval). The results are presented in the following table and in the file [Lab 04 - Vocab.sav](Lab 04 - Vocab.sav).
 
   |  No  | Low  | High |
   |------|------|------| 
@@ -97,9 +101,13 @@ NOTE: there are many ways of stating the hypotheses, but you MUST be consistent 
 
 It should be clear that *Increase* is the dependent variable.
 
-Ⓡ construct a model using the `lm()` function, and then pass this model to the `anova()` function.
+![](R.svg)
 
-Ⓥ Analyses → ANOVA → ANOVA.
+Construct a model using the `lm()` function, and then pass this model to the `anova()` function.
+
+![](v.svg)
+
+Analyses → ANOVA → ANOVA.
 
 ##### Solutions
 
@@ -108,19 +116,37 @@ It should be clear that *Increase* is the dependent variable.
 ```{r}
 data <- haven::read_sav('Lab 04 - Vocab.sav')
 data <- as.data.frame(data)
-data$Group <- as.factor(data$Group)
+data$Group <- factor(data$Group, levels=c('No', 'Low', 'High'))
 
 model <- lm(Increase ~ Group, data)
 anova(model)
 ```
 
-From the SPSS output, the test statistic is F = 63.601 and the corresponding p- value is 0.000 to 3 dec places. Thus there is very strong evidence against the null hypothesis.
+From the output, the test statistic is F = 63.601 and the corresponding p-value is < 0.001. Thus there is very strong evidence against the null hypothesis.
 
 #### 3. Why is it appropriate to carry out post-hoc tests to compare group means? Which test is most appropriate to test whether those not receiving additional treatment (No Intervention) were different to those receiving Low and High Intensity Interventions? Carry out this test.
 
-Hint: the post-hoc test we want is a *Dunnet's test*.
+Hint: the post-hoc test we want is a *Dunnett's test*.
 
-TODO
+![](R.svg)
+
+The code to perform this in R is actually a bit involved:
+
+```{r}
+library(multcomp)
+
+data <- as.data.frame(data)
+data$Group <- factor(data$Group, levels=c('No', 'Low', 'High'))
+
+model <- lm(Increase ~ Group, data)
+aovObject <- aov(model)
+dun <- glht(aovObject, linfct=mcp(Group="Dunnett"))
+summary(dun)
+```
+
+![](v.svg)
+
+There's no way to perform a Dunnett's test in jamovi, so just refer to the R results above.
 
 ##### Solutions
 
@@ -130,11 +156,29 @@ The ANOVA F test indicates that there is a difference in population mean increas
 
 Since we have a control group (i.e., those children where no additional intervention took place) a Dunnett's test is appropriate, rather than Tukey's test.
 
+```{r echo=FALSE}
+library(multcomp)
+
+data <- as.data.frame(data)
+data$Group <- factor(data$Group, levels=c('No', 'Low', 'High'))
+
+model <- lm(Increase ~ Group, data)
+aovObject <- aov(model)
+Dunnet <- glht(aovObject, linfct=mcp(Group="Dunnett"))
+summary(Dunnet)
+```
+
+There is very strong evidence that the population mean vocabulary improvement in the High intervention group is higher than the population mean vocabulary improvement for the No intervention group (p-value = 0.000) whereas the population mean vocabulary improvement in the Low intervention group is not statistically significantly different from the No intervention group (p-value = 0.9878).
+
 #### 4. Whenever an ANOVA is performed certain assumptions most hold. Perform a test for unequal variances.
 
-Ⓡ First create side-by-side box-plots and see if it looks like the groups have similar variances, then follow this up with a more formal *Levene's test*; use the `leveneTest()` function from the `car` package. Note that you need to pass the `center='mean'` argument to the `leveneTest()` function to get a "normal" Levene's test.
+![](R.svg)
 
-Ⓥ Using the ANOVA you created in question 2, in the Assumption Checks section, you'll find a checkbox for *Homogeneity tests* (*Equality of variances* is sometimes called *Homogeneity of variances*). Follow this up by producing side-by-side box-plots using the Analyses -> Explore -> Descriptives analysis. Do the two results correspond?
+First create side-by-side box-plots and see if it looks like the groups have similar variances, then follow this up with a more formal *Levene's test*; use the `leveneTest()` function from the `car` package. Note that you need to pass the `center='mean'` argument to the `leveneTest()` function to get a "normal" Levene's test.
+
+![](v.svg)
+
+Using the ANOVA you created in question 2, in the Assumption Checks section, you'll find a checkbox for *Homogeneity tests* (*Equality of variances* is sometimes called *Homogeneity of variances*). Follow this up by producing side-by-side box-plots using the Analyses -> Explore -> Descriptives analysis. Do the two results correspond?
 
 ##### Solutions
 
@@ -166,15 +210,20 @@ where the $\hat \space$ symbol indicates a predicted value
 
 #### 6. Test the normality of the residuals using Q-Q plot and Shapiro-Wilk goodness of fit tests.
 
-Ⓡ Extract the residuals from the model you created in question 2 with the `residuals()` function. Create a Q-Q plot with the `qqPlot()` function, and test for normality with the `shapiro.test()` function.
+![](R.svg)
 
-Ⓥ Using the ANOVA from question 2, under the *Assumption Checks* section, you'll find checkboxes for a *Q-Q plot* and a *Shapiro-Wilk test*.
+Extract the residuals from the model you created in question 2 with the `residuals()` function. Create a Q-Q plot with the `qqPlot()` function from the `car` package, and test for normality with the `shapiro.test()` function.
+
+![](v.svg)
+
+Using the ANOVA from question 2, under the *Assumption Checks* section, you'll find checkboxes for a *Q-Q plot* and a *Shapiro-Wilk test*.
 
 ##### Solutions
 
 Ⓢ 
 
 ```{r eval=FALSE}
+library(car)
 resids <- residuals(model)
 qqPlot(resids)
 shapiro.test(resids)
@@ -199,24 +248,31 @@ Shapiro-Wilk test has p-value = 0.257, so fail to reject null hypothesis. Conclu
 
 Ⓢ 
 
-The one-way fixed effects analysis of variance provided strong evidence against the null hypothesis (p=0.000) indicating that the population mean of vocabulary improvement is not equal across the three intervention groups. Dunnett's test confirmed that the population mean vocabulary improvement in the High intensity intervention group was statistically significantly higher than the population mean improvement for the for the No intervention group (p-value = 0.000); whilst the population mean vocabulary improvement in the Low intensity intervention was not statistically significantly higher than the population mean improvement for the for the No intervention group (p-value = 0.99).
-
-TODO
+The one-way fixed effects analysis of variance provided strong evidence against the null hypothesis (p < 0.001) indicating that the population mean of vocabulary improvement is not equal across the three intervention groups. Dunnett's test confirmed that the population mean vocabulary improvement in the High intensity intervention group was statistically significantly higher than the population mean improvement for the for the No intervention group (p-value < 0.001); whilst the population mean vocabulary improvement in the Low intensity intervention was not statistically significantly higher than the population mean improvement for the for the No intervention group (p-value = 0.99).
 
 #### 8. It was suggested that children in the No Intervention group were still exposed to community referrals and so should NOT be considered as part of a control group. Suppose that it was of interest to compare the effects of the three treatment conditions to each other WITHOUT assuming the "No intervention group" to be the control group. Conduct the appropriate test to determine which of the three groups differed from one another in terms of mean vocabulary improvement.
+
+![](R.svg)
+
+```{r}
+aovObject <- aov(model)
+TukeyHSD(aovObject)
+```
+
+![](v.svg)
+
+Look under the *Post-hoc* section. Add the variables from the left to the right that you want post-hoc tests for, then choose the correction to apply to these comparisons.
 
 ##### Solutions
 
 Ⓢ 
 
-TODO
+If the no intervention group is not treated as a control group, then the post-hoc test that is most appropriate is the Tukey-Kramer HSD method.
 
-If the no intervention group is not treated as a control group, then the post-hoc test that is most appropriate is the Tukey-Kramer HSD method (Tukey in SPSS).
+By considering the Tukey-Kramer HSD method (often just called *Tukey*):
 
-By considering the Tukey-Kramer HSD method (in SPSS, Tukey):
-
- - There is a statistically significant difference in the vocabulary of those who were in the high-intervention group and the low-intervention group (p=0.000)
- - There is a statistically significant difference in the vocabulary of those who were in the high-intervention group and the no-intervention group (p=0.000)
+ - There is a statistically significant difference in the vocabulary of those who were in the high-intervention group and the low-intervention group (p < 0.001)
+ - There is a statistically significant difference in the vocabulary of those who were in the high-intervention group and the no-intervention group (p < 0.001)
  - There is no statistically significant difference in the vocabulary of those who
 were in the no-intervention group and the low-intervention group (p= 0.991)
 
@@ -269,11 +325,9 @@ Analyse your data appropriately and write a brief report.
 
 ### 4.2.2 Randomised Block Design
 
-TODO
+For each group, launching three bears at each level, it is unlikely you were able to detect a difference in mean launch distance -– we need greater power! However, together we have greater power -- as a class we have access to much more data.
 
-For each group, launching three bears at each level, it is unlikely you were able to detect a difference in mean launch distance -– we need greater power!  However, together we have greater power -- as a class we have access to much more data.
-
- 1. With the help of your tutor, combine data from all groups (teams) into a single SPSS data file and undertake a one-way fixed effects ANOVA.
+ 1. With the help of your tutor, combine data from all groups (teams) into a single data file and undertake a one-way fixed effects ANOVA.
  
      - Has the increase in the amount of data provided sufficient evidence that raising the end of the launch platform causes a change in the average launch distance?
    
@@ -283,7 +337,7 @@ For each group, launching three bears at each level, it is unlikely you were abl
    
  3. Re-analyse the combined data but consider 'team' as a blocking variable. 
  
-     - In SPSS, identify 'team' as another fixed effect. 
+     - In your software, identify 'team' as another fixed effect. 
      - As do not wish to test for an interaction between team and height select MODEL option and in resulting pop-up window select 'Custom'
      - Highlight the two variables. Ensure 'Type' is 'Main Effects' before including in the model. 
 
@@ -311,5 +365,5 @@ In labs we have considered data from studies of the following:
 For each study:
 
  1. state whether it is appropriate to carry out a post-hoc comparison of means along with an explanation for your decision (HINT: it is only appropriate for one of the studies);
- 2. carry out the multiple comparisons in SPSS for the relevant study;
+ 2. carry out the multiple comparisons for the relevant study;
  3. review how well the data met the assumptions of the statistical analysis.
