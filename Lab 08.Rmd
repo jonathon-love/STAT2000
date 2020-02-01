@@ -37,9 +37,13 @@ We wish to investigate how well the Hopkins score could be predicted based on th
 
 #### 1. Obtain a scatter plot for this data. What does this plot suggest about the relationship between stress and symptoms?
 
-Ⓡ use the `plot()` function which takes the form `plot(Y ~ X, data)`
+![](R.svg)
+
+Use the `plot()` function which takes the form `plot(Y ~ X, data)`
   
-Ⓥ use `Analyses` ⇒ `Exploration` ⇒ `Scatterplot` (the `scatr` module must be installed)
+![](v.svg)
+
+Use `Analyses` ⇒ `Exploration` ⇒ `Scatterplot` (the `scatr` module must be installed)
 
 ##### Solutions
 
@@ -53,9 +57,13 @@ plot(Symptoms ~ Stress, data)
 
 ####  2. Fit a least squares regression model. State the equation representing the fitted least squares regression model.
   
-Ⓡ use the `lm()` function which takes the form `lm(Y ~ X, data)`
+![](R.svg)
+
+Use the `lm()` function which takes the form `lm(Y ~ X, data)`
   
-Ⓥ use `Analyses` ⇒ `Regression` ⇒ `Linear Regression`  (Hint: You'll want to specify the independent variable as a `Covariate` because it is continuous)
+![](v.svg)
+
+Use `Analyses` ⇒ `Regression` ⇒ `Linear Regression`  (Hint: You'll want to specify the independent variable as a `Covariate` because it is continuous)
 
 ##### Solutions
 
@@ -70,14 +78,18 @@ model
 
 #### 3. What is the coefficient of determination (R²) for the data? Interpret your result.
   
-Ⓡ create the model with the `lm()` function (see the previous question), and call the `summary()` function on it.
+![](R.svg)
+
+Create the model with the `lm()` function (see the previous question), and call the `summary()` function on it.
       
 ```{r eval=FALSE}
 model <- lm(Y ~ X, data)
 summary(model)
 ```
   
-Ⓥ You should already have this from the previous question
+![](v.svg)
+
+You should already have this from the previous question
 
 ##### Solutions
 
@@ -92,7 +104,9 @@ summary(model)
 
 #### 4. Plot the residuals against the predictor variable, stress. What information does this plot give you about the model?
   
-Ⓡ obtain the residuals and predicted values by calling the `residuals()` and `predict()` functions on the model. you can add these values to the existing data frame and then use the `plot()` function.
+![](R.svg)
+
+Obtain the residuals and predicted values by calling the `residuals()` and `predict()` functions on the model. you can add these values to the existing data frame and then use the `plot()` function.
       
 ```{r eval=FALSE}
 data$residuals <- residuals(model)
@@ -100,7 +114,9 @@ data$predicted <- predict(model)
 plot(residuals ~ Stress, data)
 ```
       
-Ⓥ a residuals vs explanatory variable plot is available in the `Linear Regression` analysis, in the `Assumption Checks` section. Select the checkbox `Residual plots`. You'll now find a plot of the residuals against `Symptoms` in the results.
+![](v.svg)
+
+A residuals vs explanatory variable plot is available in the `Linear Regression` analysis, in the `Assumption Checks` section. Select the checkbox `Residual plots`. You'll now find a plot of the residuals against `Symptoms` in the results.
 
 ##### Solutions
 
@@ -118,9 +134,13 @@ plot(residuals ~ Stress, data)
 
 #### 5. Plot the residuals against the predicted Y values. Explain how for simple linear regression this provides basically the same information as the previous plot.
   
-Ⓡ use the plot function, similar to the previous question
+![](R.svg)
+
+Use the plot function, similar to the previous question
       
-Ⓥ there's no easy way to do this in jamovi, but as the question has foreshadowed, the plot is basically the same -- only the scaling of the X-axis changes.
+![](v.svg)
+
+There's no easy way to do this in jamovi, but as the question has foreshadowed, the plot is basically the same -- only the scaling of the X-axis changes.
 
 ##### Solutions
 
@@ -130,14 +150,14 @@ For simple linear regression, since $\hat Y = b0 + b1X$, plotting the residuals 
   
 #### 6. Analyse the distribution of the residuals. Why is this important?
   
-Ⓡ perform a Q-Q plot of the residuals with the `qqPlot()` function from the `car` package:
+![](R.svg) perform a Q-Q plot of the residuals with the `qqPlot()` function from the `car` package:
       
 ```{r eval=FALSE}
 library(car)
 qqPlot(data$residuals)
 ```
       
-Ⓥ under the `Assumption Checks` section you'll find `Q-Q plot of residuals`
+![](v.svg) under the `Assumption Checks` section you'll find `Q-Q plot of residuals`
 
 ##### Solutions
 
@@ -164,13 +184,13 @@ where β₁ is the slope parameter of the line relating mean Hopkins score to th
 
 #### 8. What is the F test statistic for this test? What is the t test statistic? What is the relationship between the t test statistic and the F test statistic for this test?
   
-Ⓡ the F test statistic is available in the summary of the model:
+![](R.svg) the F test statistic is available in the summary of the model:
       
 ```{r eval=FALSE}
 summary(model)
 ```
       
-Ⓥ the F test statistics is available in the `Omnibus ANOVA test`, available from the `Model Coefficients` section of the `Linear Regression` analysis.
+![](v.svg) the F test statistics is available in the `Omnibus ANOVA test`, available from the `Model Coefficients` section of the `Linear Regression` analysis.
 
 ##### Solutions
 
@@ -198,13 +218,13 @@ Always quote the appropriate p-value to support your conclusion.
   ii. Write an appropriate concluding sentence about this study using this confidence interval.
   iii. What advantages or disadvantages are there in using a confidence interval rather than a hypothesis test to report this information?
       
-Ⓡ confidence intervals for the parameters of the model can by obtained with the `confint()` function
+![](R.svg) confidence intervals for the parameters of the model can by obtained with the `confint()` function
       
 ```{r eval=FALSE}
 confint(model)
 ```
       
-Ⓥ confidence intervals for the parameters estimates are available under the `Model Coefficients` section.
+![](v.svg) confidence intervals for the parameters estimates are available under the `Model Coefficients` section.
 
 ##### Solutions
 
@@ -228,7 +248,7 @@ Since a confidence interval can indicate the size of an effect (which is about p
 
 #### 11. Determine a 95% confidence interval for the expected mean symptoms score for students with reported stress levels of 35?
   
-Ⓡ create a new data frame with a `Stress` value of 35, and then pass our model and this new data frame to the `predict()` function. If we provide the argument `interval='confidence'` we'll receive a confidence interval too:
+![](R.svg) create a new data frame with a `Stress` value of 35, and then pass our model and this new data frame to the `predict()` function. If we provide the argument `interval='confidence'` we'll receive a confidence interval too:
       
 ```{r eval=FALSE}
 model <- lm(Symptoms ~ Stress, data)
@@ -236,7 +256,7 @@ new_data <- data.frame(Stress=35)
 predict(model, new_data, interval='confidence')
 ```
 
-Ⓥ There's no easy way to do this in jamovi, so you can copy and paste the above code into the `Rj Editor`.
+![](v.svg) There's no easy way to do this in jamovi, so you can copy and paste the above code into the `Rj Editor`.
 
 ##### Solutions
 
@@ -254,7 +274,7 @@ We are 95% confident that the population mean Symptoms score for students with a
 
 #### 12. Calculate a 95% prediction interval for the symptoms score of a student who reported a stress level of 35? Also compare this result with the 95% confidence interval.
 
-Ⓡ Same as the call to `predict()` in the previous question but with `interval='prediction'`.
+![](R.svg) Same as the call to `predict()` in the previous question but with `interval='prediction'`.
 
 ```{r eval=FALSE}
 model <- lm(Symptoms ~ Stress, data)
@@ -262,7 +282,7 @@ new_data <- data.frame(Stress=35)
 predict(model, new_data, interval='prediction')
 ```
 
-Ⓥ Copy and paste the above code into the `Rj Editor`.
+![](v.svg) Copy and paste the above code into the `Rj Editor`.
 
 ##### Solutions
 
@@ -276,4 +296,4 @@ predict(model, new_data, interval='prediction')
 
 We are 95% confident that the symptoms score for an individual student with a reported life events stress level of 35 will be between 66.1 and 136.5 on the Hopkins scale. The statements given above identify the differences between these two intervals and to what they refer. The first interval is an estimate of the mean.
 
-Hopkins symptoms score for the population of students who score Xh = 35 on the stress measure. The second interval is an estimate of where the Hopkins score for any one of those individuals might be. Notice the increased width of the latter.
+Hopkins symptoms score for the population of students who score $X_h$ = 35 on the stress measure. The second interval is an estimate of where the Hopkins score for any one of those individuals might be. Notice the increased width of the latter.
