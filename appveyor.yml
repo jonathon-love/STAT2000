@@ -8,6 +8,7 @@ install:
 
 build_script:
   - Rscript build.R
+  - '7z a -tzip all.zip *.html *.sav *.Rmd *.svg *.png *.zip'
 
 artifacts:
   - path: '*.html'
@@ -16,6 +17,12 @@ artifacts:
     name: data
   - path: '*.Rmd'
     name: Rmarkdown
+  - path: '*.svg'
+    name: svg files
+  - path: '*.png'
+    name: png files
+  - path: '*.zip'
+    name: zip files
 
 deploy:
     provider: S3

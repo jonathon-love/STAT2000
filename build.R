@@ -31,6 +31,7 @@ for (Rmd in Rmds) {
 }
 
 files <- list.files(pattern='Lab*.*')
+files <- c(files, 'all.zip')
 links <- sapply(files, function(x) paste0(' - [', x, '](', URLencode(x), ')'))
 
 # tweaky sort
