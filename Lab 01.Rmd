@@ -33,15 +33,13 @@ data <- as.data.frame(data)
 
 #### Recall Lecture 1:
 
-  - Inferential statistics
-    - Revision
-      - Parameters vs Statistics
-      - Sampling distributions
-      - Single and Two populations
-    - Critical Value Method
-    - Type I and II Errors
-    - Statistical Power for Tests
-    - Confidence Intervals
+- Revision
+    - Parameters vs Statistics
+    - Sampling distributions
+    - Hypothesis Testing
+- Type I and II Errors
+- Statistical Power for Tests
+- Confidence Intervals
 
 ### Lab Objectives
 
@@ -53,7 +51,7 @@ data <- as.data.frame(data)
 
 #### Overview
 
-This session reviews some concepts you should be familiar with from the STAT1070 course. If you have difficulties understanding these concepts you should review your STAT1070 notes. Please consider attending any of the help sessions, available from Week 2, if you would like some additional assistance at any time.
+This session reviews some concepts you should be familiar with from STAT1070 or STAT2010. If you have difficulties understanding these concepts you should review your notes from those courses. The course notes for STAT1070 are available on Blackboard. Please consider attending any of the help sessions, available from Week 2, if you would like some additional assistance at any time.
 
 #### Data Files
 
@@ -113,15 +111,7 @@ Discuss in small groups and answer the following:
 
 We know that the distribution will have a certain shape, a measure(s) of centre (location) and a measure(s) of spread (variation). From statistical theory, the standard deviation of the sampling distribution of sample means is $\sigma \over \sqrt n$ (called the standard error of the mean).
 
-#### 3. Describe what the Central Limit Theorem informs us about the sampling distribution of any statistic.
-
-##### Solutions
-
-Ⓢ The Central Limit Theorem identifies that, as sample size n increases, the sampling distribution (of any statistic) becomes more like a normal distribution and the standard error (of the statistic) decreases.
-
-For a deeper description of the central limit theorem look for *Central Limit Theorem* in the index of any introductory statistics textbook. Chapter Eight of *Business Statistics in Australia: Methods and Applications*, by Howley and Gerlach, provides such a detailed description by example -- copies of the textbook are available on short loans at the library (and at Co-op bookshop if desired).
-
-#### 4. Explain the Central Limit Theorem in reference to sample means.
+#### 3. Explain the Central Limit Theorem in reference to sample means from the perspective of Shape, Centre and Spread. 
 
 ##### Solutions
 
@@ -136,7 +126,7 @@ For a deeper description of the central limit theorem look for *Central Limit Th
  - The shape of the sampling distribution of mean will be normal if the original population is normal. If the original population is **NOT** normal, the sampling distribution of sample means will still be **APPROXIMATELY** normal. The closer the original population is to normal and the bigger the sample size, the better this approximation will be.
 As the sample size, n, increases, the sampling distribution approaches normality (shape approaches normal), the standard deviation decreases by  (variance decreases), and the mean of means approaches mean of original distribution (i.e., centres are the same).
 
-#### 5. To help with the above, and to visually consider the Central Limit Theorem, select the link ‘Central Limit Theorem’ from the table of course materials within Blackboard. Consider first for the parent population being Uniform for n=2 (you need to select these from respective pop-up menus), and then repeat for n=5.
+#### 4. To help with the above, and to visually consider the Central Limit Theorem, select the link ‘Central Limit Theorem’ from the table of course materials within Blackboard. Consider first for the parent population being Uniform for n=2 (you need to select these from respective pop-up menus), and then repeat for n=5.
 
 ##### Solutions
 
@@ -178,7 +168,7 @@ $$ point \space estimate ± multiplier \times standard \space error \space (of \
 
  a. What assumptions are made when employing a confidence interval for the population mean sodium content?
  
- b. Calculate a 95% confidence interval for the population mean sodium content of this brand of hot dog. (Use http://statstar.io/ for determining the $t$ value)
+ b. Calculate a 95% confidence interval for the population mean sodium content of this brand of hot dog. 
  
  c. Give a clear concluding statement of this result suitable for inclusion in a report summarising the tests.
  
@@ -226,11 +216,11 @@ Table 1.1: Food energy (kJ per 200g serving) for two brands of vanilla yoghurt.
 
 ##### Solutions
 
-Let $µA$ and $µB$ be the population means of the food energy measurements (kJ per 200g serving) for Brand A and Brand B vanilla yoghurt respectively.
+Let $µ_A$ and $µ_B$ be the population means of the food energy measurements (kJ per 200g serving) for Brand A and Brand B vanilla yoghurt respectively.
 The null hypothesis, and alternative hypothesis are
 
-$$ H_0: µA = µB $$
-$$ H_a: µA ≠ µB $$
+$$ H_0: µ_A = µ_B $$
+$$ H_a: µ_A ≠ µ_B $$
 
 #### 2. Explain the difference between one-tailed and two-tailed tests.
 
@@ -238,7 +228,7 @@ $$ H_a: µA ≠ µB $$
 
 Two-tailed tests are employed when we are interested in whether any difference exists between two means (not that one is particularly greater than the other); whereas a one-tailed test is employed when we wish to test if one population is greater/better than another.
 
-In other words, for a two-tailed test regarding population means µA and µB we want to reject the null hypothesis if we have sufficient evidence that either $µA < µB$ or that $µA > µB$.
+In other words, for a two-tailed test regarding population means µA and µB we want to reject the null hypothesis if we have sufficient evidence that either $µ_A < µ_B$ or that $µ_A > µ_B$.
 
 In a one-sided test we are only interested in one of these alternatives. (Note: A two-sided test should be the default choice. We only go to a one-sided test if there is some specific reason why we are only interested in a difference in one direction).
 
@@ -275,8 +265,10 @@ or you can do something like this:
 
 ```
 data <- data.frame(
-  Brand=c('A', 'A', 'A', ...),
-  Energy=c(672, 840, 924, ...))
+  Brand = c('A', 'A', 'A', 'A', 'A', 'A', 'A',
+            'B', 'B', 'B', 'B', 'B', 'B', 'B'),
+  Energy = c(672, 840, 924, 966, 504, 756, 588,
+             546, 714, 798, 336, 504, 420, 714))
 ```
 
 once the data is imported, you can perform a t-test with the `t.test()` function. It takes the form `t.test(formula, data)`.
@@ -445,14 +437,14 @@ Write a brief summary of the results of this study appropriate for inclusion in 
 
 Define parameters
 
- - Let µ1 represent the population mean number of words in a toddler’s vocabulary having used the language training system (research group)
+ - Let $µ_1$ represent the population mean number of words in a toddler’s vocabulary having used the language training system (research group)
 
- - Let µ2 represent the population mean number of words in a toddler’s vocabulary having **NOT** used the language training system (control group)
+ - Let $µ_2$ represent the population mean number of words in a toddler’s vocabulary having **NOT** used the language training system (control group)
 
 State Null ($H_0$) and Alternative ($H_a$) Hypotheses (in terms of the defined parameters)
 
- - $H_0: µ1 = µ2$
- - $H_a: µ1 > µ2$   (1-tailed test)   OR   $µ1 - µ2 > 0$
+ - $H_0: µ_1 = µ_2$
+ - $H_a: µ_1 > µ_2$   (1-tailed test)   OR   $µ_1 - µ_2 > 0$
 
 Test statistic and p-value: $t$ = 2.266; p-value = 0.034 (for 2-tailed test), so for this test our p-value = 0.017 
 
