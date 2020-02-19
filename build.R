@@ -30,20 +30,20 @@ for (Rmd in Rmds) {
     params=list(inc_solu=TRUE))
 }
 
-files <- list.files(pattern='Lab*.*')
-files <- c(files, 'all.zip')
-links <- sapply(files, function(x) paste0(' - [', x, '](', URLencode(x), ')'))
+#files <- list.files(pattern='Lab*.*')
+#files <- c(files, 'all.zip')
+#links <- sapply(files, function(x) paste0(' - [', x, '](', URLencode(x), ')'))
 
 # tweaky sort
-links <- gsub('-', '~', links, fixed=TRUE)
-links <- sort(links)
-links <- gsub('~', '-', links, fixed=TRUE)
+#links <- gsub('-', '~', links, fixed=TRUE)
+#links <- sort(links)
+#links <- gsub('~', '-', links, fixed=TRUE)
 
-index <- paste0('# index\n\n', paste0(links, collapse='\n'))
+#index <- paste0('# index\n\n', paste0(links, collapse='\n'))
 
-writeLines(index, 'index.Rmd')
+#writeLines(index, 'index.Rmd')
 
-rmarkdown::render(
-  input='index.Rmd',
-  output_format='html_document',
-  output_file='index.html')
+#rmarkdown::render(
+#  input='index.Rmd',
+#  output_format='html_document',
+#  output_file='index.html')
