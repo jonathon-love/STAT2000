@@ -138,17 +138,17 @@ As the sample size, n, increases, the sampling distribution approaches normality
 
 In data analysis, we usually know very little about the population. We use a sample of data from a population to infer information about the population.
 
-For example, the sample mean, $\bar{Y}$, is a point estimate for the population mean, µ.
+For example, the sample mean, $\hat Y$, is a point estimate for the population mean, µ.
 
 i.e., the sample mean is one number which estimates (and thus helps us infer information about) the population mean.
 
-Similarly, we can obtain the interval estimate for the population mean, µ, based upon the sample mean, $\bar{Y}$, and standard deviation, $s$. A C% confidence interval for $µ$ (where C% represents the confidence level) is obtained via:
+Similarly, we can obtain the interval estimate for the population mean, µ, based upon the sample mean, $\hat Y$, and standard deviation, $s$. A C% confidence interval for $µ$ (where C% represents the confidence level) is obtained via:
 
-$$ \bar{Y} ± t \times SE(\bar{Y}) $$
+$$ \hat Y ± t \times SE(\hat Y) $$
 
 and
 
-$$ \bar{Y} ± t \times { s \over \sqrt n } $$
+$$ \hat Y ± t \times { s \over \sqrt n } $$
 
 where n is the sample size and $t$ is a value based on the t-distribution (with n-1 degrees of freedom) such that
 
@@ -174,7 +174,7 @@ $$ point \space estimate ± multiplier \times standard \space error \space (of \
  
 ##### Solutions
 
-Ⓢ Let $Y$ represent the sodium content measurement for these “reduced salt" hot dogs. In this example we have taken a sample of size n = 25 hot dogs and measured $\bar{Y}$ for each one. The sample mean and standard deviation are $\bar{Y}$ = 310mg and $s$ = 36mg.
+Ⓢ Let $Y$ represent the sodium content measurement for these “reduced salt" hot dogs. In this example we have taken a sample of size n = 25 hot dogs and measured $\hat Y$ for each one. The sample mean and standard deviation are $\hat Y$ = 310mg and $s$ = 36mg.
 
  a. Assumptions:
  
@@ -183,7 +183,7 @@ $$ point \space estimate ± multiplier \times standard \space error \space (of \
      
  b. For 95% confidence, the $t$ value, determined from the t-distribution with (n – 1) = 24 degrees of freedom (df), is 2.064. Therefore, the 95% confidence interval for the population mean, µ, is:
  
-$$ \bar{Y} ± t \times { s \over \sqrt n } $$
+$$ \hat Y ± t \times { s \over \sqrt n } $$
 
 $$ 310 ± 2.064 { 36 \over \sqrt {25}  } $$
 
@@ -338,7 +338,7 @@ We could have used a confidence interval to summarise the results of the study. 
 
 ### 1.2 Hypothesis Testing Concepts - Power
 
-The concept of statistical power was discussed in Lecture 1. 
+The concept of statistical power was discussed briefly in Lecture 1. 
 
 #### 1. Describe the concept of statistical power.
 
@@ -355,9 +355,9 @@ Generally, a bigger sample size leads to a more powerful study (i.e., an increas
 #### 3. Using the yoghurt data from Section 1.1.4 above, calculate the power of the test to pick up a difference of 40 (kJ per 200g serving) in food energy.
 
 In order to calculate the power of the test, we need an estimate of the standard deviation. One option is to take the average of the standard deviations. 
-Let $S_A$ be the standard deviation of Brand A and $S_B$ be the standard deviation of Brand B.
+Let SA be the standard deviation of Brand A and SB be the standard deviation of Brand B.
 
-$S_A = 172.20$ and $S_B = 170.97$. The average standard deviation is therefore
+SA = 172.20 and SB = 170.97. The average standard deviation is therefore
 
 $$ { { 172.20 + 170.97 } \over 2 } = 171.59 $$
 
@@ -393,7 +393,7 @@ Power is 0.069, or 6.9%
 power.t.test(n=7, delta=40, sd=171.59, sig.level=0.05)
 ```
 
-#### 4. To achieve a power of 80%, do you expect that a larger or smaller sample size than the current sample size is required? Explain your reasoning.
+#### To achieve a power of 80%, do you expect that a larger or smaller sample size than the current sample size is required? Explain your reasoning.
 
 ##### Solutions
 
@@ -423,52 +423,7 @@ Required sample size is 290 per group, or 580 total.
 power.t.test(delta=40, sd=171.59, sig.level=0.05, power=0.8)
 ```
 
-#### Note: Power calculations for one-way ANOVA. 
-
-We can use the following function to perform a power calculation for a one-way ANOVA
-```
-power.anova.test(groups = NULL, n = NULL,
-                 between.var = NULL, within.var = NULL,
-                 sig.level = 0.05, power = NULL)
-```
-
-#### 5. Summarise your understanding of the relationships between the power of an hypothesis test with each of
-
- - the effect size you are trying to detect, 
- - the variance of the populations being compared, 
- - the significance level and the sample size.
- 
-Consider whether increasing or decreasing each of these (effect size, error variance, sig level, sample size) will result in an increase in power.
-
-##### Solutions
-
-Ⓢ 
-
-We may summarise the relationship between the power of a test and other characteristics of the data. The following table summarises what increasing different parameters has on power.
-
- | Increase       | Power            |
- |----------------|------------------|
- | Effect size    |   ➚ (increases)  |
- | Error variance |   ➘ (decreases)  |
- | Sample size    |   ➚ (increases)  |
- | Alpha          |   ➚ (increases)  |
-
-
-### 1.3 Preparation for next week's lab
-
-In next week's lab you will be asked to assess two journal articles. Please download the articles of Blackboard and read the first of the following two articles before class. 
-
-
- 1. Case Study 1 -- from Blackboard  
-    - Cardiegues M. et al (2000). *A comparison of jump performances of the dog flea, Ctenocephalides canis (Curtis, 1826) and the cat flea, Ctenocephalides felis felis (Bouch, 1835)*, Veterinary Parasitology, Volume 92, Issue 3, Pages 239 -- 241. https://www.sciencedirect.com/science/article/pii/S0304401700002740
- 2. Case Study 2 -- from Blackboard
-    - de Groot R. H. M., Hornstra G.; Roozendaal N.; Jolles J. (2003) *Memory Performance, but not Information Processing Speed, may be Reduced During Early Pregnancy*, Journal of Clinical and Experimental Neuropsychology, Volume 25, Issue 4, pages 482 -- 488. https://www.tandfonline.com/doi/abs/10.1076/jcen.25.4.482.13871
-
-
-
-
-
-### 1.4 Self-study – practice analyses and reporting results
+### 1.3 Self-study – practice analyses and reporting results
 
  - A researcher has developed a language training system for infants. To test the system, 12 parents are randomly selected who are willing to use the language training system with their new born infants for two years. Samples of 12 different toddlers who do not use the language training system are also tested forming a control group; the data from the test are collected and analysed.
 
