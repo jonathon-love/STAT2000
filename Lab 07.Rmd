@@ -53,11 +53,28 @@ On completion of this lab you will be able to:
 
 In the Week 7 lecture we considered various non-parametric tests that could be used in place of the many parametric tests we have learnt: testing single population, pairs of populations, multiple populations and correlation.
 
+#### Data Files
+
+```{r echo=FALSE}
+xfun::embed_file("Lab 07 - Parkinsons.sav")
+```  
+<br>
+```{r echo=FALSE}
+xfun::embed_file("Lab 07 - Pregnancy.sav")
+```
+<br>
+```{r echo=FALSE}
+xfun::embed_file("Lab 07 - Colour.sav")
+```
+
+
+
+
 ## 7.1 Wilcoxon Signed-Rank Test
 
 A neurologist is interested in the progression of Parkinson’s disease in 15 patients. In particular he wishes to understand if a particular treatment (a form of pallidotomy) provides substantial improvement in their symptoms. Therefore, one month before surgery and three months after surgery he rates the severity of each patient’s disease using a ten-point scale. Scores for Parkinsonian symptoms are given from 1 to 10 with 10 suggesting severe impairment.
 
-The data for each patient is in the table below and [Lab 07 - Parkinsons.sav](Lab 07 - Parkinsons.sav).
+The data for each patient is in the table below and *Lab 07 - Parkinsons.sav*.
 
  | Patient | Before Surgery | After Surgery |
  |---------|----------------|---------------|
@@ -132,9 +149,9 @@ Results consistent with non-parametric equivalent above. Of the two methods in q
 
 ## 7.2 Case Study
 
-In Lab 3 we reviewed the following research paper:
+In Lab 2 we reviewed the following research paper:
 
-de Groot R. H. M., Hornstra G.; Roozendaal N.; Jolles J. (2003) Memory Performance, but not Information Processing Speed, may be Reduced During Early Pregnancy Journal of Clinical and Experimental Neuropsychology, Volume 25, Issue 4, pages 482 -- 488. https://sci-hub.tw/10.1076/jcen.25.4.482.13871
+de Groot R. H. M., Hornstra G.; Roozendaal N.; Jolles J. (2003) Memory Performance, but not Information Processing Speed, may be Reduced During Early Pregnancy Journal of Clinical and Experimental Neuropsychology, Volume 25, Issue 4, pages 482 -- 488. https://www.tandfonline.com/doi/abs/10.1076/jcen.25.4.482.13871
 
 On p484 of this paper, the authors report: "Subject characteristics were examined for statistical differences between the two groups by unpaired t tests. The Mann-Whitney U-test analyzed the differences in education and number of pregnancies." Note that the Mann-Whitney U-test is the non-parametric equivalent to the *Independent samples t-test*.
 
@@ -150,7 +167,7 @@ The other subject characteristics Age, Height, Weight could reasonably be taken 
 
 Consider a Pearson Chi-squared test and Mann-Whitney U-test; why would one be more appropriate in this situation?
 
-Data available in [Lab 07 - Pregnancy.sav](Lab 07 - Pregnancy.sav).
+Data available in *Lab 07 - Pregnancy.sav*.
 
 ![](R.svg)
 
@@ -190,7 +207,7 @@ Comment: Viewing the data without doing any of the tests it is fairly obvious th
 
 To detect the presence of harmful insects in farm fields, traps consisting of boards covered with a sticky material are used. To determine which colours attract insects best (and therefore make the best traps), researchers placed six boards of each of four colours at random locations in a field of oats and measured the number of cereal leaf beetles trapped.
 
-The data is given in the following table and [Lab 07 - Colour.sav](Lab 07 - Colour.sav).
+The data is given in the following table and *Lab 07 - Colour.sav*.
 
  | Colour |    |    |    |    |    |    |
  |--------|----|----|----|----|----|----|

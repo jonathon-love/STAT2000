@@ -11,11 +11,18 @@ if ( ! require(rmarkdown))
 
 Rmds <- list.files(pattern='.*\\.Rmd')
 
+# stri_rand_strings(12, sample(4:6, 12, replace=TRUE))
+rand_sol_code = c("wqib",   "UnxCQQ", "sdLi",   "0ySXQ",  "e3nP",   "80WX",   
+              "zxOl",   "zoZt",   "ycV8Ky", "SJwwO",  "iKKpMc", "DwDx")
+
+Rmd_index = 1:length(Rmds)
+
 for (Rmd in Rmds) {
   match <- regexec('^(.*)\\.Rmd$', Rmd)
   name <- substring(Rmd, 1, nchar(Rmd)-4)
-  output_q <- paste(name, 'Q.html')
-  output_s <- paste(name, 'S.html')
+  output_q <- paste(name, ' Q.html', sep="")
+  output_s <- paste(name, ' S.html', sep="")
+#  output_s <- paste(name, ' S ',rand_sol_code[Rmd_index[Rmd == Rmds]],'.html', sep="")
 
   rmarkdown::render(
     input=Rmd,

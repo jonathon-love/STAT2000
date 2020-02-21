@@ -45,6 +45,13 @@ On completion of this lab you will be able to:
 
 In the Week 9 lecture we covered multiple linear regression. 
 
+
+#### Data Files
+
+```{r echo=FALSE}
+xfun::embed_file("Lab 09 - Surgical.sav")
+```  
+
 ## 9.1 Multiple Linear Regression
 
 A hospital surgical unit was interested in predicting survival (measured in days) in patients undergoing a particular type of liver operation. Data for 54 patients was available for analysis. From each patient record, the following information was extracted from the pre-operation evaluation:       
@@ -53,7 +60,7 @@ A hospital surgical unit was interested in predicting survival (measured in days
   
   $X_2$ a liver function test score
 
-The data for this study can be found in the file [Lab 09 - Surgical.sav](Lab 09 - Surgical.sav).
+The data for this study can be found in the file *Lab 09 - Surgical.sav*.
 
 #### 1. Fit a simple linear regression model explaining survival time, $Y$, based on blood clotting score, $X_1$. What is the equation of the fitted model (i.e., write the fitted equation of the linear relationship)? Does blood clotting score affect survival time?
 

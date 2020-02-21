@@ -55,11 +55,20 @@ In the Week 4 lecture we discussed the assumptions underlying oneway fixed effec
 
 #### Data Files
 
- - [Lab 04 - Vocab.sav](Lab 04 - Vocab.sav)
+```{r echo=FALSE}
+# a single file
+xfun::embed_file("Lab 04 - Vocab.sav")
+
+# multiple files
+#xfun::embed_files(c('source.Rmd', 'data.csv'))
+
+# a directory
+#xfun::embed_dir('data/', text = 'Download full data')
+```
 
 ## 4.1 Assumptions and Multiple Comparisons
 
-A researcher wanted to test a new approach to increase vocabulary among children with autism. For the experiment, 36 children were randomly assigned to one of three different treatments (Community referrals with No additional Intervention, Low-Intensity Intervention, and High-Intensity Intervention). After a fixed period of time, the increase in the children's vocabulary was measured (the number of additional words spoken over a specified time interval). The results are presented in the following table and in the file [Lab 04 - Vocab.sav](Lab 04 - Vocab.sav).
+A researcher wanted to test a new approach to increase vocabulary among children with autism. For the experiment, 36 children were randomly assigned to one of three different treatments (Community referrals with No additional Intervention, Low-Intensity Intervention, and High-Intensity Intervention). After a fixed period of time, the increase in the children's vocabulary was measured (the number of additional words spoken over a specified time interval). The results are presented in the following table and in the file *Lab 04 - Vocab.sav*.
 
   |  No  | Low  | High |
   |------|------|------| 

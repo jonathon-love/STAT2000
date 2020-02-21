@@ -49,13 +49,17 @@ On completion of this lab you will be able to:
 
 In the Week 12 lecture we covered Logistic Regression.
 
+
 #### Data Files
 
- - [Lab 12 - Pass out.sav](Lab 12 - Pass out.sav)
+```{r echo=FALSE}
+xfun::embed_file("Lab 12 - Pass out.sav")
+```  
+
 
 ## 12.1 Military manoeuvres
 
-Military pilots sometimes pass out when their brains are deprived of oxygen due to G-Forces during violent manoeuvres. Data were obtained by producing similar symptoms to volunteers by exposing their lower body to negative air pressure. Each pilot's age was recorded along with whether or not they passed out during the training session - the data are available in [Lab 12 - Pass out.sav](Lab 12 - Pass out.sav). Below is a plot of `PassOut` against `Age`.
+Military pilots sometimes pass out when their brains are deprived of oxygen due to G-Forces during violent manoeuvres. Data were obtained by producing similar symptoms to volunteers by exposing their lower body to negative air pressure. Each pilot's age was recorded along with whether or not they passed out during the training session - the data are available in *Lab 12 - Pass out.sav*. Below is a plot of `PassOut` against `Age`.
 
 ```{r echo=FALSE}
 data <- haven::read_sav('Lab 12 - Pass out.sav')

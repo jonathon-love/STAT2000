@@ -53,6 +53,18 @@ On completion of this lab you will be able to:
 
 In the Week 6 lecture we revised the quantitative methods discussed in weeks 1-5 in overview, and then explored additional and more complex study designs commonly applied in practice.
 
+#### Data Files
+
+```{r echo=FALSE}
+xfun::embed_file("Lab 06 - Advertising.sav")
+```  
+<br>
+```{r echo=FALSE}
+xfun::embed_file("Lab 06 - Growth.sav")
+```
+
+
+
 ## 6.1 Case Study
 
 Read the following research paper.
@@ -111,7 +123,7 @@ A researcher is interested in how well consumers recall television advertising t
 
 After the viewing the subjects are tested on their recall of details shown in the advertisements and provided a score of their recall. A higher score indicates better recall of advertising details. The researcher wishes to test at the 5% significance level.
 
-The results of the study are in [Lab 06 - Advertising.sav](Lab 06 - Advertising.sav).
+The results of the study are in *Lab 06 - Advertising.sav*.
 
 #### 1. The researcher has asked that you perform a statistical analysis to determine if the grade of celebrity and or gender of the spokesperson effects recall in television advertisements. As part of your analysis, be sure to:
 
@@ -234,7 +246,7 @@ As people were informed of what to look out for, this may make the results of th
 
 ## 6.3 Latin Squares
 
-This study considers the effects of a drug to stimulate growth in girls who are of short stature as a consequence of a particular syndrome. Blocking by subject and time period occurred whereby repeated measures for different treatments were applied to the same subject. A 5×5 Latin square design (below) was utilised for five subjects, five time periods, and five treatments. Each of the five time periods were two months duration, separated by an intervening month (no treatment was given). The five treatments were: `A`: no treatment (placebo); `B`: low dose of drug; `C`: moderate dose; `D`: high dose; `E`:very high dose. The dependent variable was the growth achieved (in millimetres) over the two-month period in which each treatment was administered. The results of the study are below and in [Lab 06 - Growth.sav](Lab 06 - Growth.sav).
+This study considers the effects of a drug to stimulate growth in girls who are of short stature as a consequence of a particular syndrome. Blocking by subject and time period occurred whereby repeated measures for different treatments were applied to the same subject. A 5×5 Latin square design (below) was utilised for five subjects, five time periods, and five treatments. Each of the five time periods were two months duration, separated by an intervening month (no treatment was given). The five treatments were: `A`: no treatment (placebo); `B`: low dose of drug; `C`: moderate dose; `D`: high dose; `E`:very high dose. The dependent variable was the growth achieved (in millimetres) over the two-month period in which each treatment was administered. The results of the study are below and in *Lab 06 - Growth.sav*.
 
 This requires a three way ANOVA with the interaction terms removed.
 

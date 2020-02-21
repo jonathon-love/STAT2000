@@ -53,12 +53,18 @@ In the Week 10 lecture we covered Outliers and Cook’s Distance, Variance Infla
 
 #### Data Files
 
- - [Lab 02 - Fertilizer.sav](Lab 02 - Fertilizer.sav)
- - [Lab 10 - Language.sav](Lab 10 - Language.sav).
+```{r echo=FALSE}
+xfun::embed_file("Lab 02 - Fertilizer.sav")
+```  
+<br>
+```{r echo=FALSE}
+xfun::embed_file("Lab 10 - Language.sav")
+```
+
 
 ## 10.1 ANOVA as Regression
 
-In an effort to determine whether there was any difference between three types of fertilizer, agricultural researchers subdivided a 30 hectare farm into plots of 2 hectares each. Of these 15 plots, five were treated with fertilizer A, five were treated with fertilizer B, and five were treated with fertilizer C. Wheat was planted on the farm and, at the end of the season, the number of tonnes reaped was measured. The data is available as Fert.sav.
+In an effort to determine whether there was any difference between three types of fertilizer, agricultural researchers subdivided a 30 hectare farm into plots of 2 hectares each. Of these 15 plots, five were treated with fertilizer A, five were treated with fertilizer B, and five were treated with fertilizer C. Wheat was planted on the farm and, at the end of the season, the number of tonnes reaped was measured. The data is available as *Lab 02 - Fertilizer.sav*.
 
 In an earlier lab, we considered this example as a simple Model One-Way ANOVA,
 
@@ -257,7 +263,7 @@ The underlying message is that ANOVA and regression are just specific examples o
 
 ## 10.2 Analysis of Covariance
 
-The effectiveness of three different methods of teaching a foreign language were compared. 30 students were randomly assigned to one of three groups corresponding to the different instruction methods. A language test is given at the end of the instruction period. IQ scores taken before the language instruction are also available. The data are given in the table below and in [Lab 10 - Language.sav](Lab 10 - Language.sav).
+The effectiveness of three different methods of teaching a foreign language were compared. 30 students were randomly assigned to one of three groups corresponding to the different instruction methods. A language test is given at the end of the instruction period. IQ scores taken before the language instruction are also available. The data are given in the table below and in *Lab 10 - Language.sav*.
 
 ![](Lab 10 - Language.png){width=400px}
 

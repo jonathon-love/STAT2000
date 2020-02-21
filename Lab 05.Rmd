@@ -54,12 +54,18 @@ In the Week 5 lecture we discussed unplanned (review) and planned comparisons �
 
 #### Data Files
 
- - [Lab 05 - Activity.sav](Lab 05 - Activity.sav)
- - [Lab 05 - Recall.sav](Lab 05 - Recall.sav)
+```{r echo=FALSE}
+xfun::embed_file("Lab 05 - Activity.sav")
+```  
+<br>
+```{r echo=FALSE}
+xfun::embed_file("Lab 05 - Recall.sav")
+```
+
 
 ## 5.1 Transformation of the Response Variable
 
-The file [Lab 05 - Activity.sav](Lab 05 - Activity.sav) contains data from a study by Conti and Musty (1984) on the activity levels in rats following administration of different levels of THC, the active ingredient in marijuana. The activity units, based on an arbitrary scale, are reported for each rat over the 10 minute post-injection period.
+The file *Lab 05 - Activity.sav* contains data from a study by Conti and Musty (1984) on the activity levels in rats following administration of different levels of THC, the active ingredient in marijuana. The activity units, based on an arbitrary scale, are reported for each rat over the 10 minute post-injection period.
 
 #### 1. Analyse the data. Ensure you test for equality of variance across treatment groups and whether the residuals are normally distributed. Report conclusions but do not consider multiple comparisons at this stage.
 
@@ -304,7 +310,7 @@ Recall the example provided in Lecture 5
  - Does one’s mood influence how well things are remembered? A psychologist decides to research this question using two factors. 
  - Factor A represents the emotional condition under which the subjects are required to learn a list of words. Subjects are made to feel either happy or sad. 
  - Factor B represents the emotional condition under which the subject’s memory is tested. Subjects are made to feel happy or sad before they are told to recall words
- - The response variable is the number of words recalled. The data appears in [Lab 05 - Recall.sav](Lab 05 - Recall.sav).
+ - The response variable is the number of words recalled. The data appears in *Lab 05 - Recall.sav*.
 
 Number of words recalled for given levels of mood during learning and at recall.
 

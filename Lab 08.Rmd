@@ -27,13 +27,35 @@ data <- as.data.frame(data)
 </style>
 ```
 
+# Lab 8 - Week 9
+
+#### Recall Lecture 8:
+
+ - ??????????????????????????????????????????
+ 
+### Lab Objectives
+
+??????????????????????????????????????????
+
+### Overview
+
+??????????????????????????????????????????
+
+#### Data Files
+
+```{r echo=FALSE}
+xfun::embed_file("Lab 08 - Stress.sav")
+```  
+
+
+
 ## 8.1 Stress and Health
 
 Psychologists have long been interested in the relationship between stress and health and have accumulated evidence to show that there are very real negative effects of stress on both the psychological and physical health of people.  
 
 Researchers investigated the relationship between stress and mental health in first-year college students using a scale developed to measure the frequency, perceived importance, and desirability of recent life events. This was considered to provide a measure of a subject’s perceived social and environmental stress. Students were also asked to complete the Hopkins Symptom Check-list, assessing presence or absence of psychological symptoms.  
 
-We wish to investigate how well the Hopkins score could be predicted based on the stress measure. The data are provided in [Lab 08 - Stress.sav](Lab 08 - Stress.sav).
+We wish to investigate how well the Hopkins score could be predicted based on the stress measure. The data are provided in *Lab 08 - Stress.sav*.
 
 #### 1. Obtain a scatter plot for this data. What does this plot suggest about the relationship between stress and symptoms?
 

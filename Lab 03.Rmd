@@ -9,6 +9,18 @@ params:
     value: TRUE
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+if ( ! require('haven'))
+  install.packages('haven')
+if ( ! require('car'))
+  install.packages('car')
+
+loadNamespace('haven')
+loadNamespace('car')
+```
+
 ```{block include=(!params$inc_solu)}
 <style>
 .section.level5 {
@@ -45,12 +57,20 @@ We will now perform some further calculations for power and sample size.
 
 #### Data Files
 
- - [Lab 02 - Fertilizer.sav](Lab 02 - Fertilizer.sav)
+```{r echo=FALSE}
+# a single file
+xfun::embed_file("Lab 03 - Fertilizer.sav")
 
+# multiple files
+#xfun::embed_files(c('source.Rmd', 'data.csv'))
+
+# a directory
+#xfun::embed_dir('data/', text = 'Download full data')
+```
 
 ## 3.1 One-way Fixed Effects ANOVA
 
-In an effort to determine whether there was any difference between three types of fertiliser, agricultural researchers subdivided a 30 hectare farm into plots of two hectares each. Of these 15 plots, five were treated with fertiliser A, five were treated with fertiliser B, and five were treated with fertiliser C. Wheat was planted on the farm and, at the end of the season, the number of tonnes reaped from each plot was measured. The data for this experiment are in the data file [Lab 02 - Fertilizer.sav](Lab 02 - Fertilizer.sav) and displayed in the following table.
+In an effort to determine whether there was any difference between three types of fertiliser, agricultural researchers subdivided a 30 hectare farm into plots of two hectares each. Of these 15 plots, five were treated with fertiliser A, five were treated with fertiliser B, and five were treated with fertiliser C. Wheat was planted on the farm and, at the end of the season, the number of tonnes reaped from each plot was measured. The data for this experiment are in the data file *Lab 02 - Fertilizer.sav* and displayed in the following table.
 
   | Plot |  A  |  B  |  C  |
   |------|-----|-----|-----|
@@ -99,7 +119,7 @@ $H_a$: Fertiliser type does affect the population mean tonnage of reaped per two
 #### 3. Perform a one way fixed effects ANOVA and reproduce the ANOVA table below.
 
 ```{r echo=FALSE}
-data <- haven::read_sav('Lab 02 - Fertilizer.sav')
+data <- haven::read_sav('Lab 03 - Fertilizer.sav')
 data <- as.data.frame(data)
 jmv::ANOVA(formula=Tonnes ~ Type, data)$main
 ```
@@ -146,7 +166,7 @@ anova(model)
 
 Ⓢ 
 
-![](Lab 02 - F.png)
+![](Lab 03 - F.png)
 
 #### 6. Recall from STAT1070 the use of post-hoc testing. Is it appropriate to carry out post-hoc tests to compare group means in this scenario? If so, what test is most appropriate to identify which fertilisers differ in terms of the tonnes reaped and conduct the test?  If not appropriate, why not?
 
@@ -347,22 +367,4 @@ The power for the same total sample size of 48 plots is now about
 
 Eliminating one of the comparison groups increases power
 
-## 2.4 Required preparation for Lab 3 & Self-study
-
-BEFORE attending Lab 3 complete 2.4.1 below - read through the publication within the Case Study section below so that you are able to discuss various aspects of the two studies that are reported in the paper.
-
-The lab will commence under the assumption that you have read the article!
-
-### 2.4.1 Case Study
-
-Cardiegues M. et al (2000). A comparison of jump performances of the dog flea, Ctenocephalides canis (Curtis, 1826) and the cat flea, Ctenocephalides felis felis (Bouch, 1835), Veterinary Parasitology, Volume 92, Issue 3, Pages 239 -- 241. https://sci-hub.tw/10.1016/S0304-4017(00)00274-0
-
-The above short research paper will be discussed in detail in next week's lab (Lab 3) so it is critical that you read through it BEFORE attending your lab so that you are able to discuss various aspects of the two studies that are reported in the paper. The lab will commence under the assumption that you have read the article!
-
-As you are reading, note the:
-
- - variables of interest (response and explanatory), 
- - how the variables were measured, 
- - the type of study (observational or experimental), and 
- - any concerns that you may have regarding the way the research was conducted.
 
