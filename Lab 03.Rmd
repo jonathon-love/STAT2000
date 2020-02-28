@@ -124,9 +124,13 @@ data <- as.data.frame(data)
 jmv::ANOVA(formula=Tonnes ~ Type, data)$main
 ```
 
-Ⓡ construct a model using the `lm()` function, and then pass this model to the `anova()` function.
+![](R.svg)
 
-Ⓥ Analyses → ANOVA → ANOVA.
+construct a model using the `lm()` function, and then pass this model to the `anova()` function.
+
+![](v.svg)
+
+Analyses → ANOVA → ANOVA.
 
 ##### Solutions
 
@@ -207,9 +211,13 @@ The assumptions are:
 
 We can test the equality of variances with the Levene's test
 
-Ⓡ In are the function `leveneTest()` is available from the `car` package. You can pass it the model we created in question 3. Note that by default `leveneTest()` uses the median rather than the mean. To be consistent with other software, provide the `center='mean'` argument)
+![](R.svg)
 
-Ⓥ Using the ANOVA you should already have open (we created in question 3), you'll find an option for Homogeneity tests under the 'Assumption Checks' section. ("Homogeneity of variances" is another name for "Equality of variances").
+In are the function `leveneTest()` is available from the `car` package. You can pass it the model we created in question 3. Note that by default `leveneTest()` uses the median rather than the mean. To be consistent with other software, provide the `center='mean'` argument)
+
+![](v.svg)
+
+Using the ANOVA you should already have open (we created in question 3), you'll find an option for Homogeneity tests under the 'Assumption Checks' section. ("Homogeneity of variances" is another name for "Equality of variances").
 
 ##### Solutions
 
@@ -249,14 +257,18 @@ where the $\hat \space$ symbol indicates a predicted value.
 
 #### 11. Test the normality of the residuals using a Q-Q plot and Shapiro-Wilk goodness of fit tests.
 
-Ⓡ Use the `qqPlot()` function from the `car` package, on the model we've already created, and the `shapiro.test()` function is available for performing Shapiro-wilk. However, `shapiro.test()` can not operate on a lm object, so we need to first extract the residuals the model, and *then* pass these to `shapiro.test`.
+![](R.svg)
+
+Use the `qqPlot()` function from the `car` package, on the model we've already created, and the `shapiro.test()` function is available for performing Shapiro-wilk. However, `shapiro.test()` can not operate on a lm object, so we need to first extract the residuals the model, and *then* pass these to `shapiro.test`.
 
 ```{r eval=FALSE}
 resids <- residuals(model)
 shapiro.test(resids)
 ```
 
-Ⓥ You'll find options for *Q-Q plot* and *Shapiro-Wilk* under the *Assumption Checks* section.
+![](v.svg)
+
+You'll find options for *Q-Q plot* and *Shapiro-Wilk* under the *Assumption Checks* section.
 
 ##### Solutions
 
@@ -301,15 +313,46 @@ In the fertiliser example, we concluded that the fertiliser type used has no sta
 
 #### 1. Consider the planning stage of this experiment. If you were to conduct an experiment you would want to know prior to the implementation if your experiment was likely to identify a certain effect size, i.e., the power you have to identify a difference (of a certain size).
 
-Suppose that the effect of fertiliser type A and B were expected to be fairly similar,   resulting in a yield of about 3.0 tonnes wheat per 2 ha plot, with fertiliser type C   expected to give a yield of about 2.8 tonnes wheat per 2 ha plot.
+Suppose that the effect of fertiliser type A and B were expected to be fairly similar, resulting in a yield of about 3.0 tonnes wheat per 2 ha plot, with fertiliser type C expected to give a yield of about 2.8 tonnes wheat per 2 ha plot. In order to determine power, we also need an expected variation in the yield for a given fertiliser type. Let's assume that yields will have a standard deviation of 0.3.
 
-TODO
+![](R.svg)
+
+To calculate power for an ANOVA design, use the `power.anova.test()` function. Different software will ask you to provide the above information in different ways (if you used jpower last week, it wanted effect-size for example); in the case of `power.anova.test()` it requires *between variance* and *within variance*. All of these are equivalent ways to describe the 'signal to noise'. It's a bit of a pain, but all these approaches produce consistent results.
+
+To calculate the power with the `power.anova.test()` function, we provide the following arguments:
+
+  - `groups` -- the number of groups
+  - `n` -- the number of observations in each group
+  - `between.var` -- the variance between groups
+  - `within.var` -- the variance within groups
+
+`groups` and `n` are hopefully straight forward. `between.var` is the variance between groups, and can is calculated by taking the variance of the group means, i.e. `var(c(3, 3, 2.8))`. `within.var` is the variance within groups, and is provided in the question; a standard deviation of 0.3. However, the `within.var` argument requires us to provide this value as a variance. Recall how to convert a standard deviation to a variance (Hint: variance is $sd^2$).
+
+```{r, eval=FALSE}
+power.anova.test(
+  groups = 3,
+  n = 5,
+  between.var = var(c(3, 3, 2.8)),
+  within.var = 0.3^2)
+```
+
+![](v.svg)
+
+Previously we've used *jpower* for power calculations, however *jpower* does not provide power calculations for ANOVA designs. You can continue these exercises using the *Rj Editor* (You can install the *Rj Editor* from the jamovi library; Analyses → Modules → jamovi Library, scroll down to *Rj Editor* and select *install*. Once installed, you can open the editor with; Analyses → R → Rj Editor).
+
+Once you've got the Rj Editor open, you can simply copy and paste the R code provided above into the editor, and press the 'play' button to run it -- but make sure you read through the description above so you understand what this R code does!
 
 ##### Solutions
 
 Ⓢ 
 
-TODO
+```{r, echo=FALSE}
+power.anova.test(
+  groups = 3,
+  n = 5,
+  between.var = var(c(3, 3, 2.8)),
+  within.var = 0.3^2)
+```
 
 #### 2. Repeat the above replacing 3, 3 and 2.8 with  1, 1, 0.8 respectively. Compare the 'Difference in Means' values and the 'Power v Sample Size' graphs: what do you notice?
 
@@ -317,21 +360,18 @@ TODO
 
 Ⓢ 
 
-Same results: the important feature is the 'relative difference' in the group means (3,3,2.8 or 1,1,0.8)
+```{r, eval=FALSE}
+power.anova.test(
+  groups = 3,
+  n = 5,
+  between.var = var(c(1, 1, 0.8)),
+  within.var = 0.3^2)
+```
 
-#### 3. What is the effect size that this experiment is aiming to detect? How does this relate to the mean wheat yields you entered in exercise 1?
+Same results: the important feature is the 'relative difference' in the group means (3, 3, 2.8 or 1, 1, 0.8)
 
-NOTE: Effect size is able to be provided in original units (tonnes yielded per two ha plot) or in terms of error standard deviations (referred to as Cohen's d).
 
-TODO
-
-##### Solutions
-
-Ⓢ 
-
-TODO
-
-#### 4. Comment on the experimental design to detect differences in mean wheat yields of this size (3, 3, 2.8).
+#### 3. Comment on the experimental design to detect differences in mean wheat yields of this size (3, 3, 2.8).
 
 What might one review to assess the experimental design (both prior to the experiment and after the experiment was conducted)?
  
@@ -347,24 +387,52 @@ Therefore this would not have been a good experimental design if the aim was to 
 
 The mean yields for fertilisers A, B and C to be 3, 3 and 2.8 are reflected in the data (2.94, 2.96, 2.8) so the power calculation seems to have been founded on good estimates of the effect to pick up (see output below).
 
+```{r}
+jmv::descriptives(
+  data,
+  Tonnes,
+  Type,
+  n=FALSE,
+  missing=FALSE,
+  median = FALSE,
+  min = FALSE,
+  max = FALSE)
+```
 
-#### 5. What is the power for a total sample size of 48 plots?
+
+#### 4. What is the power for a total sample size of 48 plots?
 
 ##### Solutions
 
 Ⓢ 
 
-Power is about 45% for a total sample size of 48 plots (see below)
+```{r}
+power.anova.test(
+  groups = 3,
+  n = 16,
+  between.var = var(c(3, 3, 2.8)),
+  within.var = 0.3^2)
+```
 
-#### 6. Suppose we simplify this experiment, and only have two comparison groups corresponding to fertiliser type A and C. Using the same expected difference in mean wheat yield for these two fertiliser types, what is the power now for a total sample size of 48 plots? What does this suggest about the effect of the number of comparison groups on power?
+Power is about 45% for a total sample size of 48 plots
+
+#### 5. Suppose we simplify this experiment, and only have two comparison groups corresponding to fertiliser type A and C. Using the same expected difference in mean wheat yield for these two fertiliser types, what is the power now for a total sample size of 48 plots? What does this suggest about the effect of the number of comparison groups on power?
 
 ##### Solutions
 
 Ⓢ 
+
+```{r}
+power.anova.test(
+  groups = 2,
+  n = 24,
+  between.var = var(c(3, 2.8)),
+  within.var = 0.3^2)
+```
 
 The power for the same total sample size of 48 plots is now about
 62% (compared with 45% when all three groups were simultaneously considered). This suggests that considering fewer comparison groups makes it easier (higher power) to detect differences. Intuitively this makes sense as the total sample size (48) remains the same but the estimates within each group will be more precise as a consequence of each group having higher numbers of replicates (24 in each of two groups, as compared to 16 in each of three groups).
 
-Eliminating one of the comparison groups increases power
+Eliminating one of the comparison groups increases power.
 
 
