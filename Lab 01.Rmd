@@ -405,7 +405,7 @@ power.t.test(n=14, delta=40, sd=171.59, sig.level=0.05)
 
 ![](v.svg)
 
-Make sure you have the *jpower* module installed, and then Analyses → jpower → Independent Samples T-Test.
+Make sure you have the *jpower* module installed, and then Analyses → jpower → Independent Samples T-Test. (To install jpower, Analyses → Modules → jamovi Library. Int the jamovi library locate *jpower* and select 'install'.)
 
 Now things are a little different in *jpower*; rather than separately specifying the expected difference between means and the standard deviation, *jpower* requires that we combine these into a single value called *effect size*. Effect size is calculated:
 
