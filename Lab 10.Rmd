@@ -54,7 +54,7 @@ In the Week 10 lecture we covered Outliers and Cook’s Distance, Variance Infla
 #### Data Files
 
 ```{r echo=FALSE}
-xfun::embed_file("Lab 02 - Fertilizer.sav")
+xfun::embed_file("Lab 03 - Fertilizer.sav")
 ```  
 <br>
 ```{r echo=FALSE}
@@ -64,7 +64,7 @@ xfun::embed_file("Lab 10 - Language.sav")
 
 ## 10.1 ANOVA as Regression
 
-In an effort to determine whether there was any difference between three types of fertilizer, agricultural researchers subdivided a 30 hectare farm into plots of 2 hectares each. Of these 15 plots, five were treated with fertilizer A, five were treated with fertilizer B, and five were treated with fertilizer C. Wheat was planted on the farm and, at the end of the season, the number of tonnes reaped was measured. The data is available as *Lab 02 - Fertilizer.sav*.
+In an effort to determine whether there was any difference between three types of fertilizer, agricultural researchers subdivided a 30 hectare farm into plots of 2 hectares each. Of these 15 plots, five were treated with fertilizer A, five were treated with fertilizer B, and five were treated with fertilizer C. Wheat was planted on the farm and, at the end of the season, the number of tonnes reaped was measured. The data is available as *Lab 03 - Fertilizer.sav*.
 
 In an earlier lab, we considered this example as a simple Model One-Way ANOVA,
 
@@ -121,7 +121,7 @@ Here we're "Recoding" the `Type` variable. We want to recode the values of `Type
 ![](R.svg) We can create these new columns, and fit the regression model as follows:
 
 ```{r}
-data <- haven::read_sav('Lab 02 - Fertilizer.sav')
+data <- haven::read_sav('Lab 03 - Fertilizer.sav')
 data$Type <- as_factor(data$Type)
 data <- as.data.frame(data)
 
