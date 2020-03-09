@@ -43,10 +43,7 @@ data$TrmntGrp <- as.factor(data$TrmntGrp)
 On completion of this lab you will be able to:
 
  - Test assumptions for a one-way fixed effects ANOVA.
- - Identify when transformation of the response variable is appropriate.
- - Transform the response variable using SPSS and perform analyses using the transformed response.
- - Identify when it is appropriate to apply orthogonal contrasts.
- - Be on track with the project proposal which is due next week.
+
 
 ### Overview
 
@@ -63,247 +60,8 @@ xfun::embed_file("Lab 05 - Recall.sav")
 ```
 
 
-## 5.1 Transformation of the Response Variable
 
-The file *Lab 05 - Activity.sav* contains data from a study by Conti and Musty (1984) on the activity levels in rats following administration of different levels of THC, the active ingredient in marijuana. The activity units, based on an arbitrary scale, are reported for each rat over the 10 minute post-injection period.
-
-#### 1. Analyse the data. Ensure you test for equality of variance across treatment groups and whether the residuals are normally distributed. Report conclusions but do not consider multiple comparisons at this stage.
-
-![](R.svg)
-
-Construct a model using the `lm()` function, and then pass this model to the `anova()` function.
-  
-![](v.svg)
-
-Analyses → ANOVA → ANOVA. It should be clear which is the dependent variable and which is the explanatory factor. Under the *Assumption Checks* section you'll find options for testing equality of variances and normality.
-
-##### Solutions
-
-Ⓢ
-
-```{r}
-library(car)
-
-model <- lm(Y ~ TrmntGrp, data)
-anova(model)
-```
-
-$H_0$: population mean activity levels are equal for the five groups (p < .001), so reject the null and conclude that at least two of the population mean activity levels in the rats differ.
-
-###### Assumptions
-
-Normality
-
-Consider the residuals as a whole. (note that the means of the residuals are always zero in each group, by the definition of the least squares estimates, if the equal variance assumption is correct, then each group’s residuals have the same mean and variance, so combining them to assess the shape of their distribution makes sense)
-
-$H_0$: residuals come from a normal distribution
-
-```{r}
-resids <- residuals(model)
-shapiro.test(resids)
-```
-
-Fail to reject null since p=0.844 and conclude the residuals are consistent with coming from a normal distribution
-
-```{r}
-qqPlot(resids)
-```
-
-Equality of variances
-
-```{r}
-leveneTest(model)
-```
-
-$H_0$: population variances are equal for all five groups
-
-Rule of thumb violated (half highest std dev 153 > twice lowest std dev 58)
-
-p = 0.023 from formal test, hence reject null at 5% significance level and hence conclude that the population variances are not equal for all five groups
-
-#### 2. Graph the residuals against the predicted values. What does your residual by predicted plot show? Explain why this is relevant to your original ANOVA analysis.
-
-![](R.svg)
-
-You can use the following code
-
-```{r eval=FALSE}
-model <- lm(Y ~ TrmntGrp, data)
-resids <- residuals(model)
-preds  <- predict(model)
-plot(preds, resids)
-```
-  
-![](v.svg)
-
-There's no easy way to perform this in jamovi, but you can paste the preceding R code in the Rj Editor.
-
-##### Solutions
-
-Ⓢ
-
-```{r echo=FALSE}
-model <- lm(Y ~ TrmntGrp, data)
-resids <- residuals(model)
-preds  <- predict(model)
-plot(preds, resids)
-```
-
-There is a fairly clear pattern in the residual by predicted plot; the variation seems to increase as the predicted Y values increase indicating the assumption of equality between the variances of the five groups is violated. This is not an uncommon pattern but is clearly not consistent with the ANOVA model which requires constant variance for all groups (and therefore at all values of the response). Recall in the first question we confirmed, by formally testing, that the assumption of equal population variances was suspect.
-
-A transformation of the response variable can often be useful in such cases. Considering the pattern in the residuals is help in determining which transformation to use.
- 
-#### 3. Consider observation 33 in the data set; Y = 376 is the response variable value for this observation in the 0.5 $\mu g$ dosage group. Explain how the residual and predicted values have been calculated for this observation and describe these values more generally, for any observation.
-
-##### Solutions
-
-Ⓢ
-
-The one-way ANOVA model allows for normally distributed errors around a group mean. The value predicted by the model for a given/observed data value is simply the sample mean of the group from which the observation arose (the estimate of its group mean). For the 0.5 $\mu g$ dosage group the sample mean is 390.56; hence this is the corresponding predicted value for the observed value of 376. In fact 390.56 is the predicted value for all the observed data coming from this particular group.
-
-The corresponding residual is the difference between the observed and predicted values:
-
-$$ 376 - 390.56 = -14.56 $$
-    
-#### 4. Transform the data to overcome the issue of non-constant variance
-
-Transformation of the response variable can be a useful remedial measure when assumptions of equal variance and/or normally distributed residuals are not met. The logarithmic transformation, either to the base 10 or base e (natural logarithms), is commonly used when residuals are right skewed or the standard deviation is proportional to the mean.
-
-![](R.svg)
-
-Create a new variable called `LogY` which is the log transformed version of `Y`, and create a new linear model using this variable (`LogY ~ TrmntGrp`). Then run the same set of analyses you ran for question 1.
-
-```{r eval=FALSE}
-data$LogY <- log(data$Y)
-```
-
-![](v.svg)
-
-Create a new computed variable called `LogY` which is the log transformed version of `Y`. Data → Add → Append Computed Variable. This creates a 'Computed variable' which we can specify a formula for. Specify a new name for the variable (for example `Log Y`), and then specify the formula `LOG(Y)` and press enter. The variable should now be filled with the log of the value from column *Y*.
-
-(Note: It turns out computed variables can do a lot more than just a log transform; if you click the small fx button you can get a full list of all the functions available).
-
-#### 5. Run the ANOVA using Log(Y) as the response instead of Y. How does this new model compare to your previous ANOVA analysis? Are the assumptions met for this model?
-
-```{r eval=FALSE}
-logModel <- lm(LogY ~ TrmntGrp, data)
-anova(logModel)
-
-logResids <- residuals(logModel)
-shapiro.test(logResids)
-qqPlot(logResids)
-leveneTest(logModel)
-```
-  
-##### Solutions
-
-Ⓢ
-
-```{r echo=FALSE}
-data$LogY <- log(data$Y)
-logModel <- lm(LogY ~ TrmntGrp, data)
-anova(logModel)
-```
-
-$H_0$: population mean activity levels are equal for the five groups (p < .001), so reject the null and conclude that at least two of the population mean of the log of activity levels in the rats differ.
-
-The new model still indicates that the THC dosage has a statistically significant effect (p < .001) but it is important to understand that in this case our conclusion is that there are differences in the population mean of the logarithm of the activity measurement, NOT in the mean of the raw activity measurement.
-
-Transforming the response variable impacts upon our interpretations. We are able to reverse the transformation when reporting final figures
-
-###### Assumptions
-
-Normality
-
-$H_0$: data come from a normal distribution
-
-```{r echo=FALSE}
-logResids <- residuals(logModel)
-shapiro.test(logResids)
-qqPlot(logResids)
-```
-
-Fail to reject null at 5% sig level since p = 0.059 and conclude the data are consistent with coming from a normal distribution.
-
-It seems the transformation may have made the situation worse with respect the assumption about a normally distributed error term, but not to the point of rejecting at the 5% sig level.
-
-Equality of population variances
-
-$H_0$: population variances are equal for all five groups
-
-```{r echo=FALSE}
-leveneTest(logModel)
-```
-
-Rule of thumb violated (highest std dev .326 < twice lowest std dev .207)
-p = 0.204 from formal test, hence fail to reject null at 5% significance level and hence conclude that the population variances of the log of activity levels are not statistically significantly different from one another.
-
-#### 6. Consider the Residual by Predicted Plot. How does this compare to the Residual by Predicted Plot obtained in the original analysis?
-
-```{r}
-logResids <- residuals(logModel)
-logPreds  <- predict(logModel)
-plot(logPreds, logResids)
-```
-
-##### Solutions
-
-Ⓢ
-
-The Residual by Predicted Plot in the output using the transformed data shows a more constant spread of the residuals for each of the groups compared with the corresponding plot for the original data (without consider the transformation). This supports the results we obtained from the formal test and indicates that the logarithmic transformation has been successful in changing the response variable into a form that satisfies the equality of variance assumption for ANOVA.
-
-#### 7. Suppose the researchers decided that post-hoc multiple comparisons were appropriate. Comment on why they would use this methodology over planned comparisons. What would be the advantage of using planned comparisons?
-
-##### Solutions
-
-Ⓢ
-
-The researcher must not have had in mind planned comparisons before collecting the data or undertaking the analysis. They therefore can only undertake unplanned comparisons. The advantage of using planned comparisons is that you are likely to make less comparisons, and can then spread your overall type 1 error risk over less comparisons, giving you a greater ability to identify a difference. In addition to this we can perform comparisons on combinations of treatment groups.
-
-#### 8. Whenever possible it is preferable to perform an analysis using the original (not transformed) units. 
-
- 1. Return to the original data and perform a multiple comparison. 
- 2. Use the transformed data to perform a multiple comparison
- 3. Comment on the findings.
-
-![](R.svg)
-
-Multiple comparisons (with a Tukey correction) can be performed in R using the `TukeyHSD` function. Note that it's necessary to convert the `lm()` object to an `aov()` object before passing it to `TukeyHSD()`.
-
-```{r eval=FALSE}
-aovObject <- aov(model)
-TukeyHSD(aovObject)
-```
-
-![](v.svg)
-
-You'll find the option to perform post-hoc tests for the different levels of `TrmntGrp` variable under the *Post Hoc Tests* section of the ANOVA.
-
-##### Solutions
-
-Ⓢ
-
-```{r}
-aovObject <- aov(model)
-TukeyHSD(aovObject)
-
-logAovObject <- aov(logModel)
-TukeyHSD(logAovObject)
-```
-
-Transforming the response variable probably doesn't make a lot of difference in this case if we are just trying to demonstrate that the THC dosage has an effect on the activity levels of the rats. However there are some differences in multiple comparisons and in confidence interval estimates of the differences in group means in this case.
-
-#### 9. Summarise your findings
-
-##### Solutions
-
-Ⓢ
-
-A logarithmic transformation of the activity scores was trialled because the raw activity scores suggested unequal variances across the comparison groups, violating of one of the fundamental ANOVA assumptions. This transformation was successful in eliminating the unequal variance problem but residual analysis for the transformed data suggested a possible problem with the assumption of normally distributed data (p = 0.059 for Shapiro-Wilk test). Other transformations should be assessed as they may provide an improved model. For the log transformed data however, the level of THC administered does have a statistically significant effect on the mean of the log of activity scores (p = 0.0002).
-
-It identified that the small doses of THC (0.1, 0.5 and 1 $\mu g$) seem to do more to increase activity compared to the control than the larger doses (2 $\mu g$). Using Dunnett’s test at a 5% significance level, the means of the log of activity scores were significantly different for the control group and each of the 0.1, 0.5, and 1 $\mu g$ groups. The 2$\mu g$ group was not significantly different from the control.
-
-## 5.2 Two Way ANOVA
+## 5.1 Two Way ANOVA
 
 Recall the example provided in Lecture 5
 
@@ -318,7 +76,7 @@ Number of words recalled for given levels of mood during learning and at recall.
 
 ##### Solutions
 
-Ⓢ
+ 
 
 With two fixed factors, the ANOVA model is:
 
@@ -362,7 +120,7 @@ Analyses -> ANOVA -> ANOVA. This is a two-way ANOVA, so we'll be specifying two 
 
 ##### Solutions
 
-Ⓢ
+ 
 
 ```{r}
 library(jmv)
@@ -380,7 +138,7 @@ ANOVA(
 
 ##### Solutions
 
-Ⓢ
+ 
 
  $H_0: \alpha\beta_{ij} = 0$ for all i, j
  
@@ -392,7 +150,7 @@ The relevant test statistic is F = 985.80, associated p-value < 0.001 and thus $
 
 ##### Solutions
 
-Ⓢ
+ 
 
  $H_0: \alpha_i = 0$ for all i
 
@@ -404,7 +162,7 @@ The relevant test statistic is F = 47.07, associated p-value < 0.001 and thus $H
 
 ##### Solutions
 
-Ⓢ
+ 
 
  $H_0: \beta_j = 0$ for all j
  
@@ -416,7 +174,7 @@ The relevant test statistic is F = 1.10, associated p-value = 0.310 and thus $H_
 
 ##### Solutions
 
-Ⓢ
+ 
 
 There is a statistically significant interaction effect on the population mean number of words recalled due to both the mood when learning and mood when recalling (p < .001); this is also evident from the graph which shows the difference in means  for a given level of mood at recall is affected by the level of mood when learning. Mood at recall does not itself have a statistically significant effect on the population mean number of words recalled (p=0.31) whilst mood when learning does (p < .001).
 
@@ -433,13 +191,17 @@ We are 95% confident that the population mean number of words recalled when:
 
 ##### Solutions
 
-Ⓢ
+ 
 
 Someone who just looked at the output superficially may look at the results of the test of the effect of recall mood and declare that it has no statistically significant effect based on the p-value of 0.31. If you look at the means plot for the recall mood factor it certainly shows that averaged over the levels of the learning mood factor there is no effect of recall mood on the number of words recalled. However, in this case, it is certainly not correct to say that recall mood does not have an effect. Recall mood has a very large effect but the effect depends on the level of the learning mood factor’s level. 
 
 This is why you should always check for an interaction effect first before trying to test for the significance of individual factors or interpret what is really happening.
 
-## 5.3 Group Project
+
+
+
+
+## 5.4 Group Project
 
 Are you on track to complete your project proposal? Discuss ideas with your tutor. 
 

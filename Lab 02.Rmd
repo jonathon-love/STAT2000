@@ -147,7 +147,7 @@ The statement: "The mean height jump carried out by 50% of fleas was calculated 
 
 As stated above, it is entirely possible that you don't particularly care that dog fleas jump higher and longer than cat fleas. However, by going over this study you have hopefully learnt about the importance of being precise in the conduct and reporting of scientific research and equally precise in interpreting the results. 
 
-### 2.2 Case Study 2
+## 2.2 Case Study 2
 
 Read the following research paper:
 

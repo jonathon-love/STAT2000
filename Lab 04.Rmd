@@ -19,7 +19,7 @@ if ( ! require('car'))
 if ( ! require('multcomp'))
   install.packages('multcomp')
 
-data <- haven::read_sav('Lab 04 - Vocab.sav')
+data <- haven::read_sav('Lab 04 - Activity.sav')
 data <- as.data.frame(data)
 ```
 
@@ -33,12 +33,14 @@ data <- as.data.frame(data)
 
 # Lab 4 - Week 5
 
-#### Recall Lecture 4:
+#### Recall Lecture 3 and 4:
 
  - ANOVA Assumptions
-   - Diagnostics 
-   - Remedial Measures
- - Comparing Means: Post-hoc tests
+ - Diagnostics 
+ - Remedial Measures  
+
+ - Comparing Means
+ 
 
 ### Lab Objectives
 
@@ -46,8 +48,12 @@ On completion of this lab you will be able to:
 
  - Identify and test assumptions for an ANOVA.
  - Identify when multiple comparisons are appropriate.
- - Perform the appropriate multiple comparisons and interpret the findings.
- - Recognise the role of Randomisation and Blocking and be able to implement in practice.
+ - Perform the appropriate multiple comparisons and interpret the findings.  
+
+ - Identify when transformation of the response variable is appropriate.
+ - Transform the response variable and perform analyses using the transformed response.
+ - Identify when it is appropriate to apply orthogonal contrasts.
+
 
 ### Overview
 
@@ -56,323 +62,404 @@ In the Week 4 lecture we discussed the assumptions underlying oneway fixed effec
 #### Data Files
 
 ```{r echo=FALSE}
-# a single file
-xfun::embed_file("Lab 04 - Vocab.sav")
-
-# multiple files
-#xfun::embed_files(c('source.Rmd', 'data.csv'))
-
-# a directory
-#xfun::embed_dir('data/', text = 'Download full data')
+xfun::embed_file("Lab 04 - Activity.sav")
+```
+<br>
+```{r echo=FALSE}
+xfun::embed_file("Lab 04 - Learning.sav")
 ```
 
-## 4.1 Assumptions and Multiple Comparisons
 
-A researcher wanted to test a new approach to increase vocabulary among children with autism. For the experiment, 36 children were randomly assigned to one of three different treatments (Community referrals with No additional Intervention, Low-Intensity Intervention, and High-Intensity Intervention). After a fixed period of time, the increase in the children's vocabulary was measured (the number of additional words spoken over a specified time interval). The results are presented in the following table and in the file *Lab 04 - Vocab.sav*.
 
-  |  No  | Low  | High |
-  |------|------|------| 
-  |  23  |  23  |  38  |
-  |  25  |  20  |  27  |
-  |  21  |  25  |  27  |
-  |  22  |  21  |  29  |
-  |  21  |  22  |  26  |
-  |  22  |  23  |  29  |
-  |  20  |  21  |  27  |
-  |  23  |  20  |  30  |
-  |  19  |  19  |  28  |
-  |  22  |  20  |  27  |
-  |  19  |  22  |  26  |
-  |  21  |  21  |  29  |
-  
-#### 1. State the null and alternative hypotheses for testing.
+## 4.1 Transformation of the Response Variable
 
-##### Solutions
+The file *Lab 04 - Activity.sav* contains data from a study by Conti and Musty (1984) on the activity levels in rats following administration of different levels of THC, the active ingredient in marijuana. The activity units, based on an arbitrary scale, are reported for each rat over the 10 minute post-injection period.
 
-Ⓢ 
-
-Since the researcher wishes to test the effect of three new treatments (no, low, high) to increase a child's vocabulary, let
-
- - $\mu_N$ represent the population mean increase (in words) of a child's vocabulary when no additional intervention (no) has been given.
- - $\mu_L$ represent the population mean increase (in words) of a child's vocabulary when low-intensity intervention (low) has been given.
- - $\mu_H$ represent the population mean increase (in words) of a child's vocabulary when high intensity intervention (high) has been given.
-
-Then the null and alternative hypotheses are
-
-  $H_0$ : $\mu_N = \mu_L = \mu_H$
-  
-  $H_a$ : at least one population mean increase in vocabulary measurement is
-different
-
-NOTE: there are many ways of stating the hypotheses, but you MUST be consistent and define the notation used.
-
-#### 2. Perform an ANOVA on the data. What is the value of the test statistic and the corresponding p-value?
-
-It should be clear that *Increase* is the dependent variable.
+#### 1. Analyse the data. Ensure you test for equality of variance across treatment groups and whether the residuals are normally distributed. Report conclusions but do not consider multiple comparisons at this stage.
 
 ![](R.svg)
 
 Construct a model using the `lm()` function, and then pass this model to the `anova()` function.
-
+  
 ![](v.svg)
 
-Analyses → ANOVA → ANOVA.
+Analyses → ANOVA → ANOVA. It should be clear which is the dependent variable and which is the explanatory factor. Under the *Assumption Checks* section you'll find options for testing equality of variances and normality.
 
 ##### Solutions
 
-Ⓢ 
+ 
 
 ```{r}
-data <- haven::read_sav('Lab 04 - Vocab.sav')
-data <- as.data.frame(data)
-data$Group <- factor(data$Group, levels=c('No', 'Low', 'High'))
+library(car)
 
-model <- lm(Increase ~ Group, data)
+model <- lm(Y ~ TrmntGrp, data)
 anova(model)
 ```
 
-From the output, the test statistic is F = 63.601 and the corresponding p-value is < 0.001. Thus there is very strong evidence against the null hypothesis.
+$H_0$: population mean activity levels are equal for the five groups (p < .001), so reject the null and conclude that at least two of the population mean activity levels in the rats differ.
 
-#### 3. Why is it appropriate to carry out post-hoc tests to compare group means? Which test is most appropriate to test whether those not receiving additional treatment (No Intervention) were different to those receiving Low and High Intensity Interventions? Carry out this test.
+###### Assumptions
 
-Hint: the post-hoc test we want is a *Dunnett's test*.
+Normality
 
-![](R.svg)
+Consider the residuals as a whole. (note that the means of the residuals are always zero in each group, by the definition of the least squares estimates, if the equal variance assumption is correct, then each group’s residuals have the same mean and variance, so combining them to assess the shape of their distribution makes sense)
 
-The code to perform this in R is actually a bit involved:
-
-```{r}
-library(multcomp)
-
-data <- as.data.frame(data)
-data$Group <- factor(data$Group, levels=c('No', 'Low', 'High'))
-
-model <- lm(Increase ~ Group, data)
-aovObject <- aov(model)
-dun <- glht(aovObject, linfct=mcp(Group="Dunnett"))
-summary(dun)
-```
-
-![](v.svg)
-
-There's no way to perform a Dunnett's test in jamovi, so just refer to the R results above.
-
-##### Solutions
-
-Ⓢ 
-
-The ANOVA F test indicates that there is a difference in population mean increase in vocabulary measurements somewhere among the three group means. Hence it is appropriate to carry out a post-hoc test to determine exactly where the difference(s) lies.
-
-Since we have a control group (i.e., those children where no additional intervention took place) a Dunnett's test is appropriate, rather than Tukey's test.
-
-```{r echo=FALSE}
-library(multcomp)
-
-data <- as.data.frame(data)
-data$Group <- factor(data$Group, levels=c('No', 'Low', 'High'))
-
-model <- lm(Increase ~ Group, data)
-aovObject <- aov(model)
-Dunnet <- glht(aovObject, linfct=mcp(Group="Dunnett"))
-summary(Dunnet)
-```
-
-There is very strong evidence that the population mean vocabulary improvement in the High intervention group is higher than the population mean vocabulary improvement for the No intervention group (p-value = 0.000) whereas the population mean vocabulary improvement in the Low intervention group is not statistically significantly different from the No intervention group (p-value = 0.9878).
-
-#### 4. Whenever an ANOVA is performed certain assumptions most hold. Perform a test for unequal variances.
-
-![](R.svg)
-
-First create side-by-side box-plots and see if it looks like the groups have similar variances, then follow this up with a more formal *Levene's test*; use the `leveneTest()` function from the `car` package. Note that you need to pass the `center='mean'` argument to the `leveneTest()` function to get a "normal" Levene's test.
-
-![](v.svg)
-
-Using the ANOVA you created in question 2, in the Assumption Checks section, you'll find a checkbox for *Homogeneity tests* (*Equality of variances* is sometimes called *Homogeneity of variances*). Follow this up by producing side-by-side box-plots using the Analyses -> Explore -> Descriptives analysis. Do the two results correspond?
-
-##### Solutions
-
-Ⓢ 
+$H_0$: residuals come from a normal distribution
 
 ```{r}
-library(car)
-leveneTest(Increase ~ Group, data, center='mean')
-
-plot(x=data$Group, y=data$Increase)
+resids <- residuals(model)
+shapiro.test(resids)
 ```
 
-We can see that although the high-intensity intervention group has a smaller sample standard deviation than the other two groups there isn't a large difference.
-The ratio of largest standard deviation to smallest is about 1.3 so applying the rule of thumb suggests the ANOVA assumption of equality of population variances is not to be rejected (Moore and McCabe (2009) suggest that as long as the largest standard deviation is less than twice the smallest standard deviation ANOVA will still give approximately correct results.)
+Fail to reject null since p=0.844 and conclude the residuals are consistent with coming from a normal distribution
 
-The Levene test reports a large p-value 0.741 indicating that the null hypothesis (of equal population variances in each group) should not be rejected.
+```{r}
+qqPlot(resids)
+```
 
-#### 5. Explain what a residual represents and/or how it is obtained.
+Equality of variances
 
-##### Solutions
+```{r}
+leveneTest(model)
+```
 
-Ⓢ 
+$H_0$: population variances are equal for all five groups
 
-In general, a residual is simply the difference between an actual response measurement and the value predicted by the fitted model for the corresponding set of explanatory variables. For one-way ANOVA this is just the difference between the measurement (observation) and its corresponding group mean (sample mean). Thus the jth residual in the ith group is:
+Rule of thumb violated (half highest std dev 153 > twice lowest std dev 58)
 
-$$ e_{ij} = Y_{ij} - \hat Y_{ij} $$
+p = 0.023 from formal test, hence reject null at 5% significance level and hence conclude that the population variances are not equal for all five groups
 
-where the $\hat \space$ symbol indicates a predicted value
-
-#### 6. Test the normality of the residuals using Q-Q plot and Shapiro-Wilk goodness of fit tests.
+#### 2. Graph the residuals against the predicted values. What does your residual by predicted plot show? Explain why this is relevant to your original ANOVA analysis.
 
 ![](R.svg)
 
-Extract the residuals from the model you created in question 2 with the `residuals()` function. Create a Q-Q plot with the `qqPlot()` function from the `car` package, and test for normality with the `shapiro.test()` function.
-
-![](v.svg)
-
-Using the ANOVA from question 2, under the *Assumption Checks* section, you'll find checkboxes for a *Q-Q plot* and a *Shapiro-Wilk test*.
-
-##### Solutions
-
-Ⓢ 
+You can use the following code
 
 ```{r eval=FALSE}
-library(car)
+model <- lm(Y ~ TrmntGrp, data)
 resids <- residuals(model)
-qqPlot(resids)
-shapiro.test(resids)
+preds  <- predict(model)
+plot(preds, resids)
 ```
+  
+![](v.svg)
 
-```{r echo=FALSE}
-resids <- residuals(model)
-qqPlot(resids)
-```
-
-Since the residuals lie on the straight line there is evidence that the error terms, for each of the three groups, are normally distributed. However, such a method does not provide a formal test of the assumption, just a visual aid.
-
-```{r echo=FALSE}
-shapiro.test(resids)
-```
-
-Shapiro-Wilk test has p-value = 0.257, so fail to reject null hypothesis. Conclude there is not enough evidence to reject the null hypothesis and it appears the assumption of normality of the residuals is valid.
-
-#### 7. Write a statement summarising the overall results of your analysis that would be appropriate for inclusion in a report.
+There's no easy way to perform this in jamovi, but you can paste the preceding R code in the Rj Editor.
 
 ##### Solutions
 
-Ⓢ 
+ 
 
-The one-way fixed effects analysis of variance provided strong evidence against the null hypothesis (p < 0.001) indicating that the population mean of vocabulary improvement is not equal across the three intervention groups. Dunnett's test confirmed that the population mean vocabulary improvement in the High intensity intervention group was statistically significantly higher than the population mean improvement for the for the No intervention group (p-value < 0.001); whilst the population mean vocabulary improvement in the Low intensity intervention was not statistically significantly higher than the population mean improvement for the for the No intervention group (p-value = 0.99).
+```{r echo=FALSE}
+model <- lm(Y ~ TrmntGrp, data)
+resids <- residuals(model)
+preds  <- predict(model)
+plot(preds, resids)
+```
 
-#### 8. It was suggested that children in the No Intervention group were still exposed to community referrals and so should NOT be considered as part of a control group. Suppose that it was of interest to compare the effects of the three treatment conditions to each other WITHOUT assuming the "No intervention group" to be the control group. Conduct the appropriate test to determine which of the three groups differed from one another in terms of mean vocabulary improvement.
+There is a fairly clear pattern in the residual by predicted plot; the variation seems to increase as the predicted Y values increase indicating the assumption of equality between the variances of the five groups is violated. This is not an uncommon pattern but is clearly not consistent with the ANOVA model which requires constant variance for all groups (and therefore at all values of the response). Recall in the first question we confirmed, by formally testing, that the assumption of equal population variances was suspect.
+
+A transformation of the response variable can often be useful in such cases. Considering the pattern in the residuals is help in determining which transformation to use.
+ 
+#### 3. Consider observation 33 in the data set; Y = 376 is the response variable value for this observation in the 0.5 $\mu g$ dosage group. Explain how the residual and predicted values have been calculated for this observation and describe these values more generally, for any observation.
+
+##### Solutions
+
+ 
+
+The one-way ANOVA model allows for normally distributed errors around a group mean. The value predicted by the model for a given/observed data value is simply the sample mean of the group from which the observation arose (the estimate of its group mean). For the 0.5 $\mu g$ dosage group the sample mean is 390.56; hence this is the corresponding predicted value for the observed value of 376. In fact 390.56 is the predicted value for all the observed data coming from this particular group.
+
+The corresponding residual is the difference between the observed and predicted values:
+
+$$ 376 - 390.56 = -14.56 $$
+    
+#### 4. Transform the data to overcome the issue of non-constant variance
+
+Transformation of the response variable can be a useful remedial measure when assumptions of equal variance and/or normally distributed residuals are not met. The logarithmic transformation, either to the base 10 or base e (natural logarithms), is commonly used when residuals are right skewed or the standard deviation is proportional to the mean.
 
 ![](R.svg)
 
+Create a new variable called `LogY` which is the log transformed version of `Y`, and create a new linear model using this variable (`LogY ~ TrmntGrp`). Then run the same set of analyses you ran for question 1.
+
+```{r eval=FALSE}
+data$LogY <- log(data$Y)
+```
+
+![](v.svg)
+
+Create a new computed variable called `LogY` which is the log transformed version of `Y`. Data → Add → Append Computed Variable. This creates a 'Computed variable' which we can specify a formula for. Specify a new name for the variable (for example `Log Y`), and then specify the formula `LOG(Y)` and press enter. The variable should now be filled with the log of the value from column *Y*.
+
+(Note: It turns out computed variables can do a lot more than just a log transform; if you click the small fx button you can get a full list of all the functions available).
+
+#### 5. Run the ANOVA using Log(Y) as the response instead of Y. How does this new model compare to your previous ANOVA analysis? Are the assumptions met for this model?
+
+```{r eval=FALSE}
+logModel <- lm(LogY ~ TrmntGrp, data)
+anova(logModel)
+
+logResids <- residuals(logModel)
+shapiro.test(logResids)
+qqPlot(logResids)
+leveneTest(logModel)
+```
+  
+##### Solutions
+
+ 
+
+```{r echo=FALSE}
+data$LogY <- log(data$Y)
+logModel <- lm(LogY ~ TrmntGrp, data)
+anova(logModel)
+```
+
+$H_0$: population mean activity levels are equal for the five groups (p < .001), so reject the null and conclude that at least two of the population mean of the log of activity levels in the rats differ.
+
+The new model still indicates that the THC dosage has a statistically significant effect (p < .001) but it is important to understand that in this case our conclusion is that there are differences in the population mean of the logarithm of the activity measurement, NOT in the mean of the raw activity measurement.
+
+Transforming the response variable impacts upon our interpretations. We are able to reverse the transformation when reporting final figures
+
+###### Assumptions
+
+Normality
+
+$H_0$: data come from a normal distribution
+
+```{r echo=FALSE}
+logResids <- residuals(logModel)
+shapiro.test(logResids)
+qqPlot(logResids)
+```
+
+Fail to reject null at 5% sig level since p = 0.059 and conclude the data are consistent with coming from a normal distribution.
+
+It seems the transformation may have made the situation worse with respect the assumption about a normally distributed error term, but not to the point of rejecting at the 5% sig level.
+
+Equality of population variances
+
+$H_0$: population variances are equal for all five groups
+
+```{r echo=FALSE}
+leveneTest(logModel)
+```
+
+Rule of thumb violated (highest std dev .326 < twice lowest std dev .207)
+p = 0.204 from formal test, hence fail to reject null at 5% significance level and hence conclude that the population variances of the log of activity levels are not statistically significantly different from one another.
+
+#### 6. Consider the Residual by Predicted Plot. How does this compare to the Residual by Predicted Plot obtained in the original analysis?
+
 ```{r}
+logResids <- residuals(logModel)
+logPreds  <- predict(logModel)
+plot(logPreds, logResids)
+```
+
+##### Solutions
+
+ 
+
+The Residual by Predicted Plot in the output using the transformed data shows a more constant spread of the residuals for each of the groups compared with the corresponding plot for the original data (without consider the transformation). This supports the results we obtained from the formal test and indicates that the logarithmic transformation has been successful in changing the response variable into a form that satisfies the equality of variance assumption for ANOVA.
+
+#### 7. Suppose the researchers decided that post-hoc multiple comparisons were appropriate. Comment on why they would use this methodology over planned comparisons. What would be the advantage of using planned comparisons?
+
+##### Solutions
+
+ 
+
+The researcher must not have had in mind planned comparisons before collecting the data or undertaking the analysis. They therefore can only undertake unplanned comparisons. The advantage of using planned comparisons is that you are likely to make less comparisons, and can then spread your overall type 1 error risk over less comparisons, giving you a greater ability to identify a difference. In addition to this we can perform comparisons on combinations of treatment groups.
+
+#### 8. Whenever possible it is preferable to perform an analysis using the original (not transformed) units. 
+
+ 1. Return to the original data and perform a multiple comparison. 
+ 2. Use the transformed data to perform a multiple comparison
+ 3. Comment on the findings.
+
+![](R.svg)
+
+Multiple comparisons (with a Tukey correction) can be performed in R using the `TukeyHSD` function. Note that it's necessary to convert the `lm()` object to an `aov()` object before passing it to `TukeyHSD()`.
+
+```{r eval=FALSE}
 aovObject <- aov(model)
 TukeyHSD(aovObject)
 ```
 
 ![](v.svg)
 
-Look under the *Post-hoc* section. Add the variables from the left to the right that you want post-hoc tests for, then choose the correction to apply to these comparisons.
+You'll find the option to perform post-hoc tests for the different levels of `TrmntGrp` variable under the *Post Hoc Tests* section of the ANOVA.
 
 ##### Solutions
 
-Ⓢ 
-
-If the no intervention group is not treated as a control group, then the post-hoc test that is most appropriate is the Tukey-Kramer HSD method.
-
-By considering the Tukey-Kramer HSD method (often just called *Tukey*):
-
- - There is a statistically significant difference in the vocabulary of those who were in the high-intervention group and the low-intervention group (p < 0.001)
- - There is a statistically significant difference in the vocabulary of those who were in the high-intervention group and the no-intervention group (p < 0.001)
- - There is no statistically significant difference in the vocabulary of those who
-were in the no-intervention group and the low-intervention group (p= 0.991)
-
-## 4.2 Bears in Space
-
-### 4.2.1 Completely Randomised Design
-
-This activity is based around launching small toy koala bears (ok, they aren't bears but Bears in Space is catchier than Koalas in Space) from a ramp in order to study factors that may affect launch distance. The class will be split into 3-4 teams with each team to have the following equipment:
-
- - one wooden stick about 90 cm long
- - one rubber band
- - one pencil eraser
- - one plastic spoon
- - six koala "bear-o-nauts"
- - one measuring tape
- - one bucket with hole approximately 10 cm above ground level when bucket turned upside down.
  
-If there are not enough students for four teams then create two teams and each team should then have twelve "bear-o-nauts".
 
-Each team's first task is to build their launcher.
+```{r}
+aovObject <- aov(model)
+TukeyHSD(aovObject)
 
- 1. Loop the rubber band enough times around one end of the launching platform (90cm wooden stick) such that the rubber band stays firmly in place but can still be rolled up and down the stick relatively easily. 
- 2. Move (roll) the rubber band to the 40 cm mark. (Caution: Beware of splinters.) 
- 3. Put the handle of the plastic spoon under the rubber band and place the eraser between the spoon handle and the stick to act as a fulcrum. 
- 4. Ensure the fulcrum is reasonably close to the rubber band so that pulling back and then releasing the spoon will launch the spoon contents, i.e. your bear, into the air.
-You now have BLC (bear-o-naut launch capability) but don't start launching yet!
-The response variable we are interested in is the launch distance, measured from the front of the launching platform, but only in the direction parallel to the platform.
-We will now design and conduct an experiment to determine the effect of raising the end of our launching platform (thus altering height and angle from which bears are launched) a fixed distance.
+logAovObject <- aov(logModel)
+TukeyHSD(logAovObject)
+```
 
-How many factors are of interest?
+Transforming the response variable probably doesn't make a lot of difference in this case if we are just trying to demonstrate that the THC dosage has an effect on the activity levels of the rats. However there are some differences in multiple comparisons and in confidence interval estimates of the differences in group means in this case.
 
-We have one factor of interest, height of end of platform.
+#### 9. Summarise your findings
 
-How many levels does the factor of interest have?
+##### Solutions
 
-Two levels: zero (horizontal) and raised. The raised level corresponds to the end of the launching platform being supported about 10cm off the ground using the hole in the side of the inverted bucket. The plastic edge should fit into a notch in the end of the launching platform (stick).
-
-We will launch half of our bears at each level. 
-
-Discuss the following points with other members of your group and write a brief but clear procedure for your experiment.
-
- 1. For a completely randomised design, all experimental units (bears) must be randomly allocated among the treatment groups (zero or raised height). Why is this important?
- 2. Are you going to launch a set of bears at the zero position, then a set of bears in the raised position or use some other order? Why might this be important to consider?
- 3. Based on your discussion of the previous two points, define a method to randomly allocate your bears to launch position and order of launch.
- 4. Determine the exact procedure you will follow (an operational definition) to launch your bears and allocate jobs to group members. Possible jobs include holding the launching platform steady, loading the bear, launching the bear, measuring the distance travelled (in the direction parallel to the launching platform), monitoring alignment of measurement, recording of data, etc. Why is it important to develop, and follow, a careful protocol that tells exactly how the experiment is to be done?
  
-Carefully launch your bears and record your measurements. 
 
-Analyse your data appropriately and write a brief report.
+A logarithmic transformation of the activity scores was trialled because the raw activity scores suggested unequal variances across the comparison groups, violating of one of the fundamental ANOVA assumptions. This transformation was successful in eliminating the unequal variance problem but residual analysis for the transformed data suggested a possible problem with the assumption of normally distributed data (p = 0.059 for Shapiro-Wilk test). Other transformations should be assessed as they may provide an improved model. For the log transformed data however, the level of THC administered does have a statistically significant effect on the mean of the log of activity scores (p = 0.0002).
 
-### 4.2.2 Randomised Block Design
+It identified that the small doses of THC (0.1, 0.5 and 1 $\mu g$) seem to do more to increase activity compared to the control than the larger doses (2 $\mu g$). Using Dunnett’s test at a 5% significance level, the means of the log of activity scores were significantly different for the control group and each of the 0.1, 0.5, and 1 $\mu g$ groups. The 2$\mu g$ group was not significantly different from the control.
 
-For each group, launching three bears at each level, it is unlikely you were able to detect a difference in mean launch distance -– we need greater power! However, together we have greater power -- as a class we have access to much more data.
 
- 1. With the help of your tutor, combine data from all groups (teams) into a single data file and undertake a one-way fixed effects ANOVA.
+## 4.2 Orthogonal Contrasts
+
+The table below shows a measure that is indicative of animal learning behaviour. This learning behaviour score is recorded for animals subject to 5 different experimental treatments. 
+
+  | Ad lib (1) | Two per day (2) | Food deprived (3) | Water deprived (4) | Food and water deprived (5) |
+  |------------|-----------------|-------------------|--------------------|-----------------------------|
+  |   18       | 20              | 34                | 31                 | 12                          |
+  |   20       | 25              | 29                | 25                 | 11                          |
+  |   21       | 23              | 25                | 27                 | 8                           |
+  |   16       | 27              | 31                | 29                 | 13                          |
+  |   15       | 25              | 29                | 28                 | 11                          |
+
+Treatments 1 and 2 represent control conditions in which the animal received ad libitum food and water (1) or else food and water twice per day (2). (Ad libitum is Latin for "at one's pleasure". In this context it means that the animal is given free access to food and water allowing the animal to eat/drink as it wants.) In treatment 3 the animals are food-deprived; in treatment 4 they are water-deprived; and in treatment 5 they are deprived of both food and water. The response variable is the number of trials taken for the animal to reach a predetermined learning benchmark-smaller number represents quicker learning.
  
-     - Has the increase in the amount of data provided sufficient evidence that raising the end of the launch platform causes a change in the average launch distance?
-   
- 2. Can you see a problem with the combined analysis? Hint: What source of variation has not been accounted for in the analysis?
+Before running this experiment, the researchers decided it would be appropriate to compare combined control groups (treatments 1 and 2) with combined experimental groups, the control groups with each other, the singly-deprived treatments with the doubly- deprived treatment and the singly-deprived treatments with each other.
+
+#### 1. 	Define the contrasts which correspond to each of these comparisons:  
+
+1. (1+2) v (3+4+5)
+2. 1 v 2
+3. (3+4) v 5
+4. 3 v 4
+
+
+##### Solutions
+
+The coefficients for each contrast are as follows:  
+
+- $\psi_1$:  1/2, 1/2, -1/3, -1/3, -1/3.  
+- $\psi_2$:  1/2, -1/2, 0, 0, 0.  
+- $\psi_3$:  0, 0, 1/2, 1/2, -1.  
+- $\psi_4$:  0, 0, 1, -1, 0.  
+
+
+#### 2. 	Demonstrate that these four comparisons make up a set of mutually orthogonal contrasts.
+
+
+##### Solutions
+
+To demonstrate that these 4 comparisons make up a set of mutually orthogonal contrasts we need to show that each possible pair of contrasts is orthogonal. For example, consider contrasts $\psi_1$ and $\psi_2$. The sum of the product of their constants is:
+$$\begin{align} \sum_{i=1}^{5} c_{i1}c_{i2} & = \frac{1}{2} \times 1 + \frac{1}{2} \times (-1) + \frac{-1}{3} \times 0 + \frac{-1}{3} \times 0 + \frac{-1}{3} \times 0 \\ & = \frac{1}{2} - \frac{1}{2} \\ & = 0 \end{align}$$
+
+Therefore $\psi_1$ and $\psi_2$ are orthogonal. Using the same process we can show that $\psi_1$ and $\psi_3$,
+$\psi_1$ and $\psi_4$, $\psi_2$ and $\psi_3$, $\psi_2$ and $\psi_4$, and $\psi_3$ and $\psi_4$ are also orthogonal pairs. 
+
+```{r eval=FALSE}
+c1 = c(0.5,  0.5, -1/3, -1/3, -1/3)
+c2 = c(0.5, -0.5,  0.0,  0.0,  0.0)
+c3 = c(0.0,  0.0,  0.5,  0.5, -1.0)
+c4 = c(0.0,  0.0,  1.0, -1.0,  0.0)
+
+sum(c1*c2)
+sum(c1*c3)
+sum(c1*c4)
+sum(c2*c3)
+sum(c2*c4)
+sum(c3*c4)
+```
+
+Thus all four contrasts are mutually orthogonal.
+
+
+#### 3. 	Fit a one-way fixed effects ANOVA model to this data and enter the four contrasts which we wish to test.
+
+We wish to test the following for each of the four contrasts:
+$$ H_0: \psi_j = 0 \\ H_A: \psi_j \neq 0. $$
+
+![](R.svg)
+
+The data is available in the file *Lab 04 - Learning.sav*. After reading the data, its important to check if the categorical variable is set as a factor. If not we need to set it to be a factor. 
+
+```{r include=TRUE}
+data <- haven::read_sav('Lab 04 - Learning.sav')
+data <- as.data.frame(data)
+
+is.factor(data$Trtmnt_Grp)
+
+data$Trtmnt_Grp = as.factor(data$Trtmnt_Grp)
+```
+
+In the following we set the first contrast, add it to a matrix with columns representing each contrast and then run the model. 
+```{r include=TRUE, eval=FALSE}
+c1 = c(0.5,  0.5, -1/3, -1/3, -1/3)
+
+mat = cbind(c1)
+
+summary(lm(Trials ~ Trtmnt_Grp, data=data, contrasts=list(Trtmnt_Grp = mat)))
+```
+
+
+![](v.svg)
+
+There's no easy way to perform this in jamovi, but you can paste the preceding R code in the Rj Editor. Jamovi does have several common contrast options that are able to be selected from the dropdown menu at ANOVA → Contrasts. The output indicates what is being compared for each option. You may need to set the reference category to get the contrasts you need here by editing the variable settings. 
+
+
  
-     - Explain what a blocking variable is and why 'team' (or 'group') can be considered a blocking variable in this example.
-   
- 3. Re-analyse the combined data but consider 'team' as a blocking variable. 
+##### Solutions 
+
+
+```{r include=TRUE}
+data <- haven::read_sav('Lab 04 - Learning.sav')
+data <- as.data.frame(data)
+
+data$Trtmnt_Grp = as.factor(data$Trtmnt_Grp)
+
+c1 = c(0.5,  0.5, -1/3, -1/3, -1/3)
+c2 = c(0.5, -0.5,  0.0,  0.0,  0.0)
+c3 = c(0.0,  0.0,  0.5,  0.5, -1.0)
+c4 = c(0.0,  0.0,  1.0, -1.0,  0.0)
+
+mat = cbind(c1, c2, c3, c4)
+
+summary(lm(Trials ~ Trtmnt_Grp, data=data, contrasts=list(Trtmnt_Grp = mat)))
+```
+
+
  
-     - In your software, identify 'team' as another fixed effect. 
-     - As do not wish to test for an interaction between team and height select MODEL option and in resulting pop-up window select 'Custom'
-     - Highlight the two variables. Ensure 'Type' is 'Main Effects' before including in the model. 
+ 
+#### 4. 	Write an appropriate concluding statement for each planned comparison.
 
- 4. Including the blocking variable in the above manner gives us an ANOVA with two factors. Although we haven't explicitly covered two-way ANOVA yet, it is basically an extension of the knowledge you have of one-way ANOVA. 
-Consider the row in the ANOVA table corresponding to raising the end of the launch platform. What is the p-value and your conclusion about the effect of 'team' on launch distance? How has specifying the blocking variable changed the results?
+##### Solutions
 
- 5. Based on your analysis, what is the effect of team on launch distance?
+$H_0: \frac{\mu_1 + \mu_2}{2} = \frac{\mu_3 + \mu_4 + \mu_5}{3}, H_A: \frac{\mu_1 + \mu_2}{2} \neq \frac{\mu_3 + \mu_4 + \mu_5}{3}$ → $H_0: \psi_1 = 0, H_A: \psi_1 \neq 0$: The population mean number of trials taken by animals in the two control groups combined is on average is statistically significantly larger than the population mean number of trails taken by animals in the three experimental groups combined (p = 5.84e-10). This suggests that on average food and or water deprivation on average improved animal behavior.  
 
-### 4.3 Group Project
+$H_0: \mu_1 = \mu_2, H_A: \mu_1 \neq \mu_2$ → $H_0: \psi_2 = 0, H_A: \psi_2 \neq 0$: The population mean number of trials taken by animals in the ad lib control group is statistically significantly smaller than the population mean number of trails taken by animals in the control group where animals were fed food and water twice a day (p = 0.001). 
 
-Time in this lab has been allocated for further discussions with your group members. Hopefully you are close to deciding on an appropriate scenario for your project. The Bears in Space exercise shows that an experiment does not have to be difficult or expensive. (Note: Copies or simple derivatives of this experiment are not acceptable project scenarios.)
+$H_0: \frac{\mu_3 + \mu_4}{2} = \mu_5, H_A: \frac{\mu_3 + \mu_4}{2} \neq \mu_5$ → $H_0: \psi_3 = 0, H_A: \psi_3 \neq 0$: There is no statistically significant difference between the population mean number of trials taken on average by animals in the combined groups deprived of food and water  compared to the population mean number of trials taken in the group where animals are deprived of both food and water (p = 0.449).
 
-Once you have a basic idea for a project scenario you need to refine it by defining your response variable(s) and explanatory variable(s). What relationship between variables might be useful to explore? How will you measure the variables? Can you create an operational definition for each variable?
+$H_0: \mu_3 = \mu_4, H_A: \mu_3 \neq \mu_4$ → $H_0: \psi_4 = 0, H_A: \psi_4 \neq 0$: The population mean number of trials taken by animals in the food deprived group is statistically significantly smaller than the population mean number of trials taken by animals in the water deprived group (p = 0.015), suggesting food deprivation has improved animal behaviour compared to water deprivation.   
 
-Many researchers will consult statisticians when planning studies. Use your tutor as a sounding board now or during help session times (see Blackboard for times and locations!).
 
-### 4.4 Homework
+#### 5. 	Why is it important to differentiate between planned and unplanned comparisons?
 
-In labs we have considered data from studies of the following:
+##### Solutions
 
- - the food energy content for two different brands of vanilla yoghurt.
- - tonnes of wheat reaped for plots treated with one of three different types of fertiliser.
- - the head widths (in millimetres) of a species of tiger beetle (Cicindela circumpicta) from three different localities.
+Where specific questions cannot be formulated in advance of the analysis, or where we wish to make more comparisons than can be expressed within a set of orthogonal contrasts, we need to use one of the post-hoc methods for means comparison. These methods should only be used after rejecting the general ANOVA $H_0$ of equal means.  
 
-For each study:
+An unplanned comparison such as Tukey’s test relies on the ANOVA F-test firstly identifying a difference; and involves all comparisons and thus uses an overall Type I error rate split amongst many more comparisons.
 
- 1. state whether it is appropriate to carry out a post-hoc comparison of means along with an explanation for your decision (HINT: it is only appropriate for one of the studies);
- 2. carry out the multiple comparisons for the relevant study;
- 3. review how well the data met the assumptions of the statistical analysis.
+For planned comparisons, specific questions regarding comparisons among the means are posed *before* the data are collected. Tests are then performed on select comparisons. Expressing a selected group of comparisons in the form of contrasts and testing the corresponding hypotheses is more powerful (more likely to detect a difference if one exists).
+
+*The usual check of the ANOVA assumptions should still be carried out.* Not asked for but are included here. 
+
+```{r include=TRUE, echo=F}
+model = (lm(Trials ~ Trtmnt_Grp, data=data, contrasts=list(Trtmnt_Grp = mat)))
+shapiro.test(residuals(model))
+leveneTest(Trials ~ Trtmnt_Grp, data=data, center="mean")
+```
+
+
+
