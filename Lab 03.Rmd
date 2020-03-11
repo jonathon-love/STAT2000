@@ -306,7 +306,9 @@ Suppose that the effect of fertiliser type A and B were expected to be fairly si
 
 ![](R.svg)
 
-To calculate power for an ANOVA design, use the `power.anova.test()` function. Different software will ask you to provide the above information in different ways (if you used jpower last week, it wanted effect-size for example); in the case of `power.anova.test()` it requires *between variance* and *within variance*. All of these are equivalent ways to describe the 'signal to noise'. It's a bit of a pain, but all these approaches produce consistent results.
+There are several ways to calculate power in R. Two usefull functions are the `power.anova.test()` and `pwr.anova.test()` functions. Depending on what information you have, you may choose to use one over the other. 
+
+Different software will ask you to provide the above information in different ways (if you used jpower last week, it wanted effect-size for example); in the case of `power.anova.test()` it requires *between variance* and *within variance*. All of these are equivalent ways to describe the 'signal to noise'. It's a bit of a pain, but all these approaches produce consistent results.
 
 To calculate the power with the `power.anova.test()` function, we provide the following arguments:
 
@@ -315,7 +317,7 @@ To calculate the power with the `power.anova.test()` function, we provide the fo
   - `between.var` -- the variance between groups
   - `within.var` -- the variance within groups
 
-`groups` and `n` are hopefully straight forward. `between.var` is the variance between groups, and can is calculated by taking the variance of the group means, i.e. `var(c(3, 3, 2.8))`. `within.var` is the variance within groups, and is provided in the question; a standard deviation of 0.3. However, the `within.var` argument requires us to provide this value as a variance. Recall how to convert a standard deviation to a variance (Hint: variance is $sd^2$).
+`groups` and `n` are hopefully straight forward. `between.var` is the variance between groups, and can is calculated by taking the variance of the group means, i.e. `var(c(3, 3, 2.8))`. `within.var` is the variance within groups, and is provided in the question; a standard deviation of 0.3. However, the `within.var` argument requires us to provide this value as a variance. Recall how to convert a standard deviation to a variance (Hint: variance is $sd^2$). If you were given data from a pilot study, you can calculate an estimate of the `within.var` by calculating the pooled standard deviation.
 
 ```{r, eval=FALSE}
 power.anova.test(
@@ -325,11 +327,29 @@ power.anova.test(
   within.var = 0.3^2)
 ```
 
+The `pwr.anova.test` function requires up to provide the effect size. The effect size is the ratio of the between group standard deviation and the within group standard deviation. That is $f = \frac{\sigma^*_{\text{between}}}{\sigma_{\text{within}}}$. The star on the numerator is because when calculating this value, we actually use the population variance formula, that is, we divide by $k$ groups, rather than $k-1$. You will see below I muliply the variance calculated by $\frac{k}{k-1}$ to change the variance calculation to have a divisor of $k$. 
+
+```{r, eval=FALSE}
+k = 3
+sigma_between = sqrt(var(c(3, 3, 2.8))*(k-1)/k)
+sigma_within = 0.3
+
+pwr.anova.test(k = k, n = 5, f = sigma_between/sigma_within, sig.level = 0.05)
+```
+
+Another thing to note is how we actually calculate the within group standard deviation. In this question we are provided with this number but in practice we have to come up with an estimate of this from some pilot data. The best method is to use the pooled variance formula: 
+$$s^2_p = \frac{\sum_{i=1}^{k} (n_i - 1)s_i^2}{\sum_{i=1}^{k} (n_i - 1)} $$ 
+where $s_i^2$ is the sample variance of the ith group. When your pilot data group sample sizes are large, you may simply take the average of the group variances. 
+
 ![](v.svg)
 
 Previously we've used *jpower* for power calculations, however *jpower* does not provide power calculations for ANOVA designs. You can continue these exercises using the *Rj Editor* (You can install the *Rj Editor* from the jamovi library; Analyses → Modules → jamovi Library, scroll down to *Rj Editor* and select *install*. Once installed, you can open the editor with; Analyses → R → Rj Editor).
 
 Once you've got the Rj Editor open, you can simply copy and paste the R code provided above into the editor, and press the 'play' button to run it -- but make sure you read through the description above so you understand what this R code does!
+
+![](GPower.png)
+
+A very useful and *powerful* software for power calculations is GPower. This is free software that is available [here](http://www.psychologie.hhu.de/arbeitsgruppen/allgemeine-psychologie-und-arbeitspsychologie/gpower.html). 
 
 ##### Solutions
 
