@@ -38,7 +38,6 @@ data <- as.data.frame(data)
  - ANOVA Assumptions
  - Diagnostics 
  - Remedial Measures  
-
  - Comparing Means
  
 
@@ -68,6 +67,18 @@ xfun::embed_file("Lab 04 - Activity.sav")
 ```{r echo=FALSE}
 xfun::embed_file("Lab 04 - Learning.sav")
 ```
+<br>
+```{r echo=FALSE}
+xfun::embed_file("Lab 04 - Box_Office_1.csv")
+```
+<br>
+```{r echo=FALSE}
+xfun::embed_file("Lab 04 - Box_Office_2.csv")
+```
+<br>
+```{r echo=FALSE}
+xfun::embed_file("Lab 04 - Box_Office_3.csv")
+```
 
 
 
@@ -79,8 +90,23 @@ The file *Lab 04 - Activity.sav* contains data from a study by Conti and Musty (
 
 ![](R.svg)
 
-Construct a model using the `lm()` function, and then pass this model to the `anova()` function.
-  
+Construct a model using the `lm()` function, and then pass this model to the `anova()` function. 
+
+If we have our data stored in an object called `data_object` that has variable names `response` and `predictor`, the `lm()` function gets used as follows: 
+```
+lm_1 = lm(response ~ predictor, data = data_object)
+```
+Because the objects `response` and `predictor` do not exist outside of the data frame object, we need to specify where `response` and `predictor` come from using `data = data_object`. We could omit the `data = data_object` command if we entered `response` and `predictor` directly as follows: 
+```
+lm_1 = lm(data_object$response ~ data_object$predictor)
+```
+The `$` charachter in `data_object$response` says, extract the `response` variable from the `data_object` data frame. You should practice using the `$` operator as well as using both methods for running the linear model. 
+
+You then need to use the `anova()` function on the linear model object:
+```
+anova(lm_1)
+```
+
 ![](v.svg)
 
 Analyses → ANOVA → ANOVA. It should be clear which is the dependent variable and which is the explanatory factor. Under the *Assumption Checks* section you'll find options for testing equality of variances and normality.
@@ -461,5 +487,100 @@ shapiro.test(residuals(model))
 leveneTest(Trials ~ Trtmnt_Grp, data=data, center="mean")
 ```
 
+
+## 4.3 Polynomial Contrasts
+
+In the lecture I presented an R script that generated some data. This data was for film box office takings in millions of dollars predicted by the ordinal variable film rating in stars from one to five. 
+
+#### 1. Load the *Lab 04 - Box_Office_1.csv* data set. Create a side-by-side boxplot and comment on the relationship between score and box office taking. Also formally test for a statistically significant polynomial contrasts at the 5% significance level.
+
+![](R.svg)
+
+For R users, this file type is different to the .sav SPSS files we have already seen. The commands for loading the data are quite similar though. 
+
+```
+data = read.csv(file = "Lab 04 - Box_Office_1.csv")
+data$film_ratings = ordered(dat$film_ratings)
+```
+The film ratings are numeric. We need to also tell R that the variable is a factor, and ordinal. This is done with   `ordered()`. 
+
+We then create the linear model using the conrasts command and using the `contr.poly()` function to automatically determine the contrasts. The 5 is for how many levels the ordinal variable has. 
+```
+lm_contrast = lm(box_office~film_ratings, data=data, contrasts=list(film_ratings = contr.poly(5)))
+summary(lm_contrast)
+```
+
+![](v.svg)
+
+In Jamovi, go to ANOVA → ANOVA → Contrasts → Polynomial. 
+
+
+##### Solutions
+
+```{r include=TRUE, echo=F}
+data = read.csv('Lab 04 - Box_Office_1.csv')
+data$film_ratings = ordered(data$film_ratings)
+
+boxplot(box_office~film_ratings, data=data, xlab = "Film Ratings", ylab = "Box Office Takings")
+
+lm_contrast = lm(box_office~film_ratings, data=data, contrasts=list(film_ratings = contr.poly(5)))
+summary(lm_contrast)
+```
+
+Looking at the boxplots there appears to be a positive relationship that is non-linear. As the rating increases the box ofice taking appears to increase at an increasing rate, indicating a potential quadratic relationship. There is no down and back up shape indicating that there is a linear component as well. 
+
+At the 5% significance level we would only find a linear relationship in the ordinal variable. 
+
+
+#### 2. The box plots you created in question 1 should have shown a quadratic relationship. There are two possible reasons why you were not able to identify it at the 5% significance level? What are they? 
+
+
+##### Solutions
+
+Either the quadratic relationship does not exist, and therefore not identifying it was the correct thing to do, that is no error. Or there actually was a quadratic relationship, and we did not find it, that is we *incorrectly didn't reject*. This is a type II error. To avoid type II errors we need *POWER*. Given that the sample size is quite small, this indicates that we may have low power.  
+
+In fact, the data is actually simulated from a model that uses a quadratic function. This means that here we know the truth, and that is the population is a quadratic relationship. We did not identify this, therefore we made a type II error. 
+
+#### 3. Load the *Lab 04 - Box_Office_2.csv* data set. Create a side-by-side boxplot and comment on the relationship between score and box office taking. What sort of relationship would you expect to see identified in a formal test and would you expect the parameter estimates to be positive or negative?  
+
+##### Solutions
+
+```{r include=TRUE, echo=F}
+data = read.csv('Lab 04 - Box_Office_2.csv')
+data$film_ratings = ordered(data$film_ratings)
+
+boxplot(box_office~film_ratings, data=data, xlab = "Film Ratings", ylab = "Box Office Takings")
+```
+
+The side-by-side box plots start low and then moving to the right increase and then start to decrease. This indicates a negative quadratic relationship, meaning the parameter estimate should be negative. Given that it looks roughly symetric, there is unlikely to be a significant linear contrast.  
+
+
+#### 4. Formally test for a statistically significant polynomial contrasts at the 5% significance level. Check to see if the significant contrasts have the parameter estimates you expected.   
+
+##### Solutions
+
+```{r include=TRUE, echo=F}
+lm_contrast = lm(box_office~film_ratings, data=data, contrasts=list(film_ratings = contr.poly(5)))
+summary(lm_contrast)
+```
+
+There is a statistically significant negative quadratic relationship at the 5% significance level. As expected there is no significant linear relationship. 
+
+
+#### 5. Load the *Lab 04 - Box_Office_3.csv* data set. This is data comes from the same model that was used to create the data in question 1, however this data set is much larger. Are you now able to identify a statistically significant quadratic relatiosnhip?  
+
+##### Solutions
+
+```{r include=TRUE, echo=F}
+data = read.csv('Lab 04 - Box_Office_3.csv')
+data$film_ratings = ordered(data$film_ratings)
+
+boxplot(box_office~film_ratings, data=data, xlab = "Film Ratings", ylab = "Box Office Takings")
+
+lm_contrast = lm(box_office~film_ratings, data=data, contrasts=list(film_ratings = contr.poly(5)))
+summary(lm_contrast)
+```
+
+The same sort of shape now exists in the box plots, however now we are able to identify a linear and quadratic relationship. This is because now the total sample size is 500, meaning we have much more *POWER* to identify the relationship. 
 
 

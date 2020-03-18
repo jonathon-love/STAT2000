@@ -317,7 +317,9 @@ To calculate the power with the `power.anova.test()` function, we provide the fo
   - `between.var` -- the variance between groups
   - `within.var` -- the variance within groups
 
-`groups` and `n` are hopefully straight forward. `between.var` is the variance between groups, and can is calculated by taking the variance of the group means, i.e. `var(c(3, 3, 2.8))`. `within.var` is the variance within groups, and is provided in the question; a standard deviation of 0.3. However, the `within.var` argument requires us to provide this value as a variance. Recall how to convert a standard deviation to a variance (Hint: variance is $sd^2$). If you were given data from a pilot study, you can calculate an estimate of the `within.var` by calculating the pooled standard deviation.
+`groups` and `n` are hopefully straight forward. `between.var` is the variance between groups, and can is calculated by taking the variance of the group means, i.e. `var(c(3, 3, 2.8))`. `within.var` is the variance within groups, and is provided in the question; a standard deviation of 0.3. However, the `within.var` argument requires us to provide this value as a variance. Recall how to convert a standard deviation to a variance (Hint: variance is $sd^2$). If you were given data from a pilot study, you can calculate an estimate of the `within.var` by calculating the pooled standard deviation. 
+
+*Remember* though that a power calculation is only an estimate. To know the exact power we need to know the values of the population parameters, $\mu_1, \mu_2, ... \sigma^2$. We often estimate these by what we expect, or hope, or by what we see in pilot data. It may be useful to be conservative with your power calculation by arbitrarily increasing your within variance estimate, or even plotting your power against the other factors that effect it.  
 
 ```{r, eval=FALSE}
 power.anova.test(
@@ -361,6 +363,19 @@ power.anova.test(
   between.var = var(c(3, 3, 2.8)),
   within.var = 0.3^2)
 ```
+
+Below we have a power calculation for several values of the within variance which is then plotted. 
+
+```{r, eval=TRUE}
+within.var = seq(0.05,0.4,0.01)
+POW_calc = power.anova.test(
+  groups = 3,
+  n = 5,
+  between.var = var(c(3, 3, 2.8)),
+  within.var = within.var^2)
+plot(POW_calc$power~within.var, xlab = "Within SD", ylab = "Power", type = "l")
+```
+
 
 #### 2. Repeat the above replacing 3, 3 and 2.8 with  1, 1, 0.8 respectively. Compare the 'Difference in Means' values and the 'Power v Sample Size' graphs: what do you notice?
 
