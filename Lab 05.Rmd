@@ -17,9 +17,9 @@ if ( ! require('haven'))
 if ( ! require('car'))
   install.packages('car')
 
-data <- haven::read_sav('Lab 05 - Activity.sav')
+data <- haven::read_sav('Lab 05 - Recall.sav')
 data <- as.data.frame(data)
-data$TrmntGrp <- as.factor(data$TrmntGrp)
+
 ```
 
 ```{block include=(!params$inc_solu)}
@@ -32,38 +32,39 @@ data$TrmntGrp <- as.factor(data$TrmntGrp)
 
 # Lab 5 - Week 6
 
-#### Recall Lecture 4:
+#### Recall Lecture 5:
 
- - Part 1. Brief Review - Comparing Means: Post-hoc tests (unplanned comparisons)
- - Part 2. Comparing Means: a priori tests (planned comparisons)(Mod 5, Sect 5.2)
- - Part 3. Two-Way ANOVA (Mod 6) 
+ - Revision: One-way fixed effects ANOVA, Unplanned comparisons, Contrasts, 
+ - Two-way ANOVA, Interactions
+ - Common study designs: Extensions on Two-way ANOVA
 
 ### Lab Objectives
 
 On completion of this lab you will be able to:
 
- - Test assumptions for a one-way fixed effects ANOVA.
-
+ - Fit a two-way ANOVA.
+ - Fit a factorial ANOVA model with an interaction term.
+ - Interpret the interaction effect
 
 ### Overview
 
-In the Week 5 lecture we discussed unplanned (review) and planned comparisons – within the latter we introduced orthogonal contrasts (a series of null hypotheses we wish to test, which are determined before the data have been analysed). We also began the extension analysis, two-way fixed effects ANOVA.
+In the Week 5 lecture we reviewed some of the content covered in the course so far: One-way fixed effects ANOVA; Unplanned comparisons; Contrasts. We then extended the one-way ANOVA to a two-way fixed effects ANOVA where we have two main factors and an interaction term. We also looked at factorial ANOVA as well other types of designs.
+
 
 #### Data Files
 
 ```{r echo=FALSE}
-xfun::embed_file("Lab 05 - Activity.sav")
-```  
-<br>
-```{r echo=FALSE}
 xfun::embed_file("Lab 05 - Recall.sav")
 ```
-
+<br>
+```{r echo=FALSE}
+xfun::embed_file("Lab 05 - Advertising.sav")
+```  
 
 
 ## 5.1 Two Way ANOVA
 
-Recall the example provided in Lecture 5
+Recall the example provided in Lecture 5:
 
  - Does one’s mood influence how well things are remembered? A psychologist decides to research this question using two factors. 
  - Factor A represents the emotional condition under which the subjects are required to learn a list of words. Subjects are made to feel either happy or sad. 
@@ -113,6 +114,30 @@ ANOVA(
   emMeans = ~LearningMood+RecallMood+LearningMood:RecallMood,
   emmTables = TRUE)
 ```
+
+The more traditional way in R would be as follows: 
+```{r, eval=FALSE}
+data <- haven::read_sav('Lab 05 - Recall.sav')
+data <- as.data.frame(data)
+
+lm_1 = lm(WordsRecalled~LearningMood*RecallMood, data = data)
+anova(lm_1)            
+
+library("emmeans")
+# LearningMood marginal means
+emmeans(lm_1,specs = ~ LearningMood, data = data)
+emmip(lm_1,formula = ~ LearningMood, data = data, CIs = T, PIs = F)
+
+# RecallMood marginal means
+emmeans(lm_1,specs = ~ RecallMood, data = data)
+emmip(lm_1,formula = ~ RecallMood, data = data, CIs = T, PIs = F)
+
+# Interaction
+emmeans(lm_1,specs = ~ LearningMood|RecallMood, data = data)
+emmip(lm_1,formula = ~ RecallMood~LearningMood, data = data, CIs = T, PIs = F)
+
+```
+
 
 ![](v.svg)
 
@@ -198,10 +223,217 @@ Someone who just looked at the output superficially may look at the results of t
 This is why you should always check for an interaction effect first before trying to test for the significance of individual factors or interpret what is really happening.
 
 
+## 5.2 Factorial (multi-way) ANOVA
+
+A researcher is interested in how well consumers recall television advertising that they have seen. Two factors that the researcher considers may have an effect are the existence of a celebrity in the advertisement as well as the gender of the primary spokesperson in the advertisement. Individuals for the study are randomly selected and then randomly allocated to groups. Each of the groups will watch a set piece of television programming for two hours with several advertisements that meet the respective groups criteria randomly scattered though ordinary advertisements.
+
+After the viewing the subjects are tested on their recall of details shown in the advertisements and provided a score of their recall. A higher score indicates better recall of advertising details. The researcher wishes to test at the 5% significance level.
+
+The results of the study are in *Lab 05 - Advertising.sav*. If using R, remember to convert the predictor variables to factors using `as.factor()`.
+
+```{r}
+data <- haven::read_sav('Lab 05 - Advertising.sav')
+data <- as.data.frame(data)
+data$Celebrity <- as.factor(data$Celebrity)
+data$GenderSpokes <- as.factor(data$GenderSpokes)
+data$GenderViewer <- as.factor(data$GenderViewer)
+```
+
+#### 1. The researcher has asked that you perform a statistical analysis to determine if the grade of celebrity and or gender of the spokesperson effects recall in television advertisements. As part of your analysis, be sure to:
+
+ - Include the null and alternative hypotheses for the elements of the model you are testing.
+ - Justify your final decision.
+ 
+This requires a two way ANOVA to be performed. If you cannot remember the steps to create the output for a two way ANOVA, review the exercises from last week.
+
+##### Solutions
+
+  
+
+```{r}
+model <- lm(Score ~ Celebrity * GenderSpokes, data)
+anova(model)
+```
+
+First we are required to test the interaction effect between the two factors. Let factor A be `Celebrity` and factor B be `GenderSpokes`.
+
+$H_0: \alpha\beta_{ij} = 0$
+
+$H_a:$ at least one effect is non-zero,
+
+where $\alpha\beta_{ij}$ represents the interaction effect between the ith and jth level of the factor A and B.
+
+Given the p-value of 0.425 is greater then our significance level, we are unable to identify a statistically significant interaction effect. 
+
+We should also test both main effects. 
+
+$H_0: \alpha_i = 0$
+
+$H_a:$ at least one $\alpha_i$ is non-zero
+
+Here $\alpha_i$ represents the effect due to the ith level of the `Celebrity` factor.
+
+Given the p-value of 0.061 is greater then our significance level, we are unable to identify a statistically significant effect for the `Celebrity` main effect. 
+
+$H_0: \beta_j  = 0$
+
+$H_a:$ at least one $\beta_j$ is non-zero
+
+The $\beta_j$ represents the effect due to the jth level of the `GenderSpokes` factor.
+
+Given the p-value of 0.191 is greater then our significance level, we are unable to identify a statistically significant effect for the `GenderSpokes` main effect. 
 
 
 
-## 5.4 Group Project
 
-Are you on track to complete your project proposal? Discuss ideas with your tutor. 
+#### 2. After providing your analysis to the researcher, she informs you that you forgot a factor in the model. An additional factor for which data was collected was intended to be included in the analysis. The additional factor is the gender of the person viewing the advertisements. Run your analysis again including the additional factor.
+
+  i. Looking at the ANOVA table, are there any factors of the model that are now significant? Be sure to indicate your null and alternative hypothesis for these factors as well as check the assumptions for the analysis.
+  
+  ii. Explain the relationship with any of the interaction terms that are identified as being statistically significant. Use a marginal means plot (profile plots) to help with this.
+
+##### Solutions
+
+  
+
+Below is the ANOVA table for the three way ANOVA.
+
+```{r}
+model <- lm(Score ~ Celebrity * GenderSpokes * GenderViewer, data)
+anova(model)
+```
+
+
+Let factor A, B, and C be `Celebrity`, `GenderSpokes`, and `GenderViewer` respectively. $\alpha_i$ represents the effect due to the ith level of the `Celebrity` factor, $\beta_j$ represents the effect due to the jth level of the `GenderSpokes` factor, $\gamma_k$ represents the effect due to the kth level of the `GenderViewer` factor. $\alpha\beta_{ij}$ represents the interaction effect between the ith and jth level of the factor A and B. $\alpha\gamma_{ik}$ represents the interaction effect between the ith and kth level of the factor A and C. $\beta\gamma_{jk}$ represents the interaction effect between the jth and kth level of the factor B and C. $\alpha\beta\gamma_{ijk}$ represents the three way interaction effect between the factor A, B, and C. 
+
+Of the interaction terms: 
+
+ $H_0: \beta\gamma_{jk} = 0$
+ 
+ $H_a: \beta\gamma_{jk} \ne 0$
+
+Since the p-value (0.0113) is less than 0.05, there is a statistically significant interaction between the gender of the viewer and the gender of the spokesperson. 
+
+For the main effects: 
+
+ $H_0: \alpha_i = 0$
+
+ $H_a: \alpha_i \ne 0$
+
+Since the p-value (0.027) is less than 0.05, there is a statistically significant effect due to the level of celebrity of the spokesperson. 
+
+**Assumptions**
+
+Randomness: Told that the subjects are randomly selected and randomly allocated to groups.
+
+Independence: Due to random sampling, can assume this.
+
+Equal variance:
+
+```{r}
+leveneTest(model, center='mean')
+```
+
+The p-value (p = 0.058) is greater than 0.05 indicating that there is not enough evidence to violate this assumption. Although it is borderline, a transformation or non-parametric test may be appropriate.
+
+Normality:
+
+```{r}
+res <- residuals(model)
+shapiro.test(res)
+```
+
+The residuals have been combined and tested all together. The test of normality does not provide evidence to reject this assumption (p=0.240).
+
+Outliers: 
+
+The side by side box plot does not indicate any outliers.
+
+```{r}
+plot(Score ~ Celebrity, data)
+```
+
+ii. Below is the marginal means plot for gender of the spokesperson and gender of the viewer.
+
+```{r}
+jmv::ANOVA(
+  formula = Score ~ GenderSpokes * GenderViewer,
+  data = data,
+  emMeans = ~GenderSpokes:GenderViewer,
+  emmPlotError = 'none'
+)$emm
+```
+
+It appears that if you are a male viewer, you score higher on recalling details of the advertisement when the spokesperson is female. Where as if you are a female viewer you are more likely to score higher recalling when the spokesperson is male. This is shown by the lines crossing each other in the above plot. 
+
+You could also create the plot using the `emmeans` package as follows.
+
+```{r include=FALSE} 
+library("emmeans")
+```
+```{r message=FALSE}
+emmip(model,formula = ~ GenderViewer~GenderSpokes, data = data, CIs = T, PIs = F)
+```
+
+
+#### 3. You are now told that when individuals were allocated to groups, they were informed of the style of advertisements they were going to be eventually tested on. Does this information change the validity of any conclusions you are able to make from the experiment?
+
+As people were informed of what to look out for, this may make the results of the experiment not generalisable to the general public. For example, knowing that you’re supposed to be looking at adds with celebrities, you may recognise adds with celebrities and pay closer attention. This could be the reason that this main effect was significant.
+
+
+## 5.3 Group Project
+
+This was a reminder to talk to your tutor about your group project. However the group project has been removed due to COVID-19. 
+
+If you have time still, have a go at exercise 5.4. 
+
+<!-- Are you on track to complete your project proposal? Discuss ideas with your tutor.  -->
+
+
+## 5.4 Homework - Case Study
+
+Read the following research paper. It is available on Blackboard.
+
+Langer, E. J., & Abelson, R. P. (1974). A patient by any other name ...: Clinician group difference in labeling bias. *Journal of Consulting and Clinical Psychology*, 42(1), 4–9. https://doi.org/10.1037/h0036054
+
+
+#### 1. Explain what the response and explanatory variables are in this study. How have they been measured or determined?
+
+##### Solutions
+
+There are two explanatory variables:
+
+**type of clinician** with values *analytic* or *behavioural*. The researchers deliberately recruited their experimental subjects from clinicians with affiliations to university departments known to be oriented towards one type or the other. But they also checked the classification using a questionnaire - see the Subjects and Clinician Groupings paragraphs under the METHOD section of the paper.
+
+**label** with values *patient* or *job applicant*. Half of the analytic clinicians and half of the behavioural clinicians were told that the person they observed in a videotaped interview was a “patient”. The other halves of each group viewed the same tape but were told that the person was a “job applicant”. See Procedure under METHOD for the exact scripts used to instruct each clinician subject.
+
+The response variable was a score between 1, representing very disturbed, and 10, representing very well-adjusted for the clinician's beliefs about the interviewee. However, this was not assessed directly by the clinician but was an average of ratings by 5 independent raters of the written responses by the clinicians to a set of open-ended questions about the interviewee. See Dependent Measure under METHOD for the details.
+
+#### 2. How has the data been analysed? Is this method appropriate?
+
+##### Solutions
+
+  
+
+The basic method is a 2 x 2 factorial ANOVA, i.e., a two-way ANOVA where each factor has 2 levels. (To complicate the analysis slightly, a subgrouping of the analytic group of clinicians was also analysed.)
+
+#### 3. Explain why the concept of interaction is so important in this study.
+
+##### Solutions
+
+The main result of this study (see next point) is all about interaction. The effect of the label is virtually non-existent for one group of clinicians, but substantial for the other group.
+
+#### 4. Summarise the main results of the study.
+
+##### Solutions
+
+Regardless of whether the interviewee was labelled as a “patient” or a “job applicant”, the behavioural therapists tended to describe the interviewee as fairly well-adjusted (e.g., 6.26 v 5.98). The average adjustment rating from the analytic therapists however was significantly lower (more disturbed) for those who were told that the interviewee was a “patient” compared to the average rating from those told that he was a “job applicant” (e.g., NYU 5.88 v 2.40).
+
+#### 5. This study is a specific example of how people's judgement can be influenced or biased by their expectations. Why is this general concept often important when developing the detailed methodology for a research study?
+
+##### Solutions
+
+This study is a specific example of how people's judgement can be influenced or biased by their expectations. So if you are using people as the subjects of your experiment then you need to make sure that the responses you measure really are caused by the changes being made in the explanatory variables and not confounded by the subjects responding to information consciously or unconsciously provided by the researcher.
+
+
 

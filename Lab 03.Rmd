@@ -125,7 +125,25 @@ jmv::ANOVA(formula=Tonnes ~ Type, data)$main
 
 ![](R.svg)
 
-Construct a model using the `lm()` function, and then pass this model to the `anova()` function.
+Construct a model using the `lm()` function, and then pass this model to the `anova()` function. 
+
+In general, if our data is stored in an object called `data_object` say, that has variable names `response` and `predictor`, the `lm()` function gets used as follows: 
+```{r eval=FALSE}
+lm_1 = lm(response ~ predictor, data = data_object)
+```
+Because the objects `response` and `predictor` do not exist outside of the data frame object, we need to specify where `response` and `predictor` come from using `data = data_object`. We could omit the `data = data_object` command if we entered `response` and `predictor` directly as follows: 
+```{r eval=FALSE}
+lm_1 = lm(data_object$response ~ data_object$predictor)
+```
+The `$` charachter in `data_object$response` says, extract the `response` variable from the `data_object` data frame. You should practice using the `$` operator as well as using both methods for running the linear model. 
+
+*The first method above is preferred though. It makes it easier to perform use the* `leveneTest` *function later. You can simply enter the* `lm_1` *model object into the function*. 
+
+You then need to use the `anova()` function on the linear model object:
+```{r eval=FALSE}
+anova(lm_1)
+```
+
 
 ![](v.svg)
 
